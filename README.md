@@ -110,25 +110,23 @@ MySQL Database
 ---
 
 ## 📸 Application Screenshots
-
 > Screenshots are stored inside the `screenshots/` directory
 
 ### 🏠 Home Page
-![Home Page](screenshots/Screenshot 2025-10-03 115032.png)
+![Home Page](screenshots/Screenshot%202025-10-03%20115032.png)
 
 ### 🔐 Login Page
-![Login Page](screenshots/Screenshot 2025-10-14 134617.png)
+![Login Page](screenshots/Screenshot%202025-10-14%20134617.png)
 
 ### 📊 Admin Dashboard
-![Admin Dashboard](screenshots/Screenshot 2025-10-14 135813.png)
+![Admin Dashboard](screenshots/Screenshot%202025-10-14%20135813.png)
 
 ### 👁️ Exam Monitoring Page
-![Exam Monitoring](screenshots/Screenshot 2025-10-14 135954.png)
+![Exam Monitoring](screenshots/Screenshot%202025-10-14%20135954.png)
 
 ### 🧪 Test Cases & Validation
-![Test Cases](screenshots/Screenshot 2025-10-14 141106.png)
+![Test Cases](screenshots/Screenshot%202025-10-14%20141106.png)
 
----
 
 ## 🧪 Testing & Validation
 
