@@ -127,6 +127,15 @@ MySQL Database
 ### 🧪 Test Cases & Validation
 ![Test Cases](screenshots/Screenshot%202025-10-14%20141106.png)
 
+### 🔹 Extra Screenshots
+
+![Screenshot](screenshots/Screenshot%202025-10-15%20092310.png)  
+![Screenshot](screenshots/Screenshot%202025-10-15%20092703.png)  
+![Screenshot](screenshots/Screenshot%202025-10-15%20100852.png)  
+![Screenshot](screenshots/Screenshot%202025-10-15%20104244.png)  
+![Screenshot](screenshots/Screenshot%202025-10-15%20111122.png)  
+![Screenshot](screenshots/Screenshot%202025-10-29%20122043.png)
+
 
 ## 🧪 Testing & Validation
 
