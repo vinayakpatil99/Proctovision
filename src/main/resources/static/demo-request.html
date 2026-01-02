@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request a Demo — MyProctor.ai</title>
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/robot.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #0b1020;
+  --card: rgba(16, 23, 51, 0.9);
+  --brand: #7c5cff;
+  --brand-2: #21d4fd;
+  --text: #eef2ff;
+  --muted: #b6c0e7;
+  --radius: 14px;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(124, 92, 255, .25), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(33, 212, 253, .18), transparent 60%),
+    linear-gradient(180deg, #070a17, #0b1020 45%, #0b1020 100%);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+.demo-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.35);
+  max-width: 480px;
+  margin: auto;
+  backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.input-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-container input,
+.input-container textarea {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.15);
+  background-color: rgba(255,255,255,0.05);
+  color: var(--text);
+}
+
+.input-container input:focus,
+.input-container textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 0.2rem rgba(124,92,255,0.3);
+  background-color: rgba(255,255,255,0.08);
+}
+
+.input-container label {
+  position: absolute;
+  left: 42px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.6);
+  pointer-events: none;
+  transition: 0.3s ease all;
+}
+
+.input-container input:focus + label,
+.input-container input:not(:placeholder-shown) + label,
+.input-container textarea:focus + label,
+.input-container textarea:not(:placeholder-shown) + label {
+  top: -0.5rem;
+  left: 12px;
+  font-size: 0.75rem;
+  color: var(--brand);
+  background: var(--card);
+  padding: 0 0.25rem;
+}
+
+.input-container i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,0.5);
+}
+
+.btn-brand {
+  background: linear-gradient(90deg, var(--brand), var(--brand-2));
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: var(--radius);
+  width: 100%;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-brand:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124, 92, 255, 0.35);
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(255,255,255,0.05);
+  border: none;
+  color: var(--text);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: 0.3s;
+}
+
+.back-btn:hover {
+  background: rgba(124,92,255,0.15);
+}
+</style>
+</head>
+<body>
+
+<div class="demo-card">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i> Back</button>
+  <h2 class="text-center mb-4">Request a Demo</h2>
+
+  <form id="demoForm">
+    <div class="input-container">
+      <i class="fas fa-user"></i>
+      <input type="text" name="name" placeholder=" " required />
+      <label>Your Name</label>
+    </div>
+
+    <div class="input-container">
+      <i class="fas fa-envelope"></i>
+      <input type="email" name="email" placeholder=" " required />
+      <label>Email Address</label>
+    </div>
+
+    <div class="input-container">
+      <i class="fas fa-phone"></i>
+      <input type="tel" name="phone" placeholder=" " required />
+      <label>Phone</label>
+    </div>
+
+    <div class="input-container">
+      <i class="fas fa-building"></i>
+      <input type="text" name="college" placeholder=" " required />
+      <label>College / Company</label>
+    </div>
+
+    <div class="input-container">
+      <i class="fas fa-comment-dots"></i>
+      <textarea name="message" placeholder=" " rows="4"></textarea>
+      <label>Message</label>
+    </div>
+
+    <button type="submit" class="btn-brand">Submit Request</button>
+  </form>
+
+  <p id="responseMsg" class="mt-4 text-center fw-semibold"></p>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+const form = document.getElementById('demoForm');
+const responseMsg = document.getElementById('responseMsg');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = {
+    name: form.name.value,
+    email: form.email.value,
+    phone: form.phone.value,
+    college: form.college.value,
+    message: form.message.value
+  };
+
+  try {
+    responseMsg.innerText = "⏳ Sending...";
+    responseMsg.className = "mt-4 text-center fw-semibold text-warning";
+
+    const res = await fetch('http://localhost:9090/api/demo/request', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const text = await res.text();
+
+    responseMsg.innerText = "✅ Demo Request Submitted Successfully!";
+    responseMsg.className = "mt-4 text-center fw-semibold text-success";
+    form.reset();
+
+    // Redirect to home after 3 seconds
+    setTimeout(() => {
+      window.location.href = "home.html"; // Change to your home page URL
+    }, 3000);
+
+  } catch(err) {
+    responseMsg.innerText = '❌ Error: ' + err.message;
+    responseMsg.className = "mt-4 text-center fw-semibold text-danger";
+  }
+});
+</script>
+
+</body>
+</html>

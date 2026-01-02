@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Successful</title>
+  <!-- For plain HTML -->
+<link rel="icon" type="image/png" href="../images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .success-container {
+      text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+      position: relative;
+    }
+
+    /* Centering wrapper for pulse + checkmark */
+    .circle-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
+
+    /* Pulse circle effect */
+    .pulse {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.4); /* Blue shade for login */
+      top: 0;
+      left: 0;
+      animation: pulseEffect 2s infinite;
+      z-index: -1;
+    }
+
+    /* Checkmark circle */
+    .checkmark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: #3b82f6; /* Blue for login success */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 50px;
+      color: white;
+      animation: scaleUp 0.6s ease forwards;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes scaleUp {
+      from {transform: translate(-50%, -50%) scale(0);}
+      to {transform: translate(-50%, -50%) scale(1);}
+    }
+
+    @keyframes pulseEffect {
+      0% { transform: scale(1); opacity: 0.6; }
+      70% { transform: scale(1.5); opacity: 0; }
+      100% { transform: scale(1.5); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="success-container">
+    <div class="circle-wrapper">
+      <div class="pulse"></div>
+      <div class="checkmark">✔</div>
+    </div>
+    <h1>Login Successful</h1>
+    <p>Redirecting to dashboard...</p>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.location.href = "dashboard1.html"; // Change to your dashboard page
+    }, 3000); // 3 seconds delay
+  </script>
+
+</body>
+</html>

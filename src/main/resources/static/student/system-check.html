@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Instructions & System Check - Proctovision</title>
+<link rel="icon" type="image/png" href="../images/logoprocto.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family:'Inter',sans-serif;
+  background:#f0f2f5;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.container {
+  background:#fff;
+  padding:40px 50px;
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.1);
+  width:520px;
+  max-width:95%;
+  text-align:center;
+  transition:all 0.3s ease;
+}
+h2 { color:#1890ff; margin-bottom:20px; font-size:24px; }
+.step { display:none; text-align:left; animation:fadeIn 0.4s ease; }
+.step.active { display:block; }
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+ol { padding-left:20px; }
+ol li { margin:10px 0; font-size:15px; line-height:1.5; }
+
+.check-item { margin:14px 0; display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee; }
+.check-item span.status { font-weight:600; }
+.check-item button { padding:5px 12px; font-size:13px; border:none; border-radius:6px; background:#40a9ff; color:#fff; cursor:pointer; transition:0.3s; }
+.check-item button:hover { background:#1890ff; }
+
+button.main-btn { padding:12px 25px; border:none; border-radius:8px; background:#1890ff; color:#fff; cursor:pointer; font-weight:600; font-size:15px; margin-top:25px; transition:all 0.3s; }
+button.main-btn:disabled { background:#a0cfff; cursor:not-allowed; }
+button.main-btn:hover:not(:disabled) { background:#40a9ff; }
+
+#webcamPreview { width:250px; height:180px; border:2px solid #1890ff; border-radius:8px; margin:10px auto; display:block; background:#000; object-fit:cover; }
+p { font-size:14px; color:#555; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Step 1: Instructions -->
+  <div class="step active" id="stepInstructions">
+    <h2>Exam Instructions</h2>
+    <ol>
+      <li>Keep your webcam on and stay visible.</li>
+      <li>Full-screen mode is mandatory.</li>
+      <li>Do not switch tabs or use other applications.</li>
+      <li>Follow the exam timer strictly.</li>
+      <li>Ensure a stable internet connection.</li>
+    </ol>
+    <button class="main-btn" onclick="nextStep()">Acknowledge & Continue</button>
+  </div>
+
+  <!-- Step 2: System Checks -->
+  <div class="step" id="stepSystemCheck">
+    <h2>System Compatibility Check</h2>
+    <div class="check-item">📹 Webcam: <span id="webcamStatus" class="status">Pending</span> <button onclick="checkWebcam()">Check</button></div>
+    <video id="webcamPreview" autoplay muted></video>
+    <div class="check-item">🎤 Microphone: <span id="micStatus" class="status">Pending</span> <button onclick="checkMic()">Check</button></div>
+    <div class="check-item">🌐 Browser: <span id="browserStatus" class="status">Pending</span> <button onclick="checkBrowser()">Check</button></div>
+    <div class="check-item">🖥 Screen: <span id="screenStatus" class="status">Pending</span> <button onclick="checkScreen()">Check</button></div>
+    <div class="check-item">⚡ Network: <span id="networkStatus" class="status">Pending</span> <button onclick="checkNetwork()">Check</button></div>
+    <button class="main-btn" id="nextFullScreenBtn" disabled onclick="nextStep()">Next → Full-Screen</button>
+  </div>
+
+  <!-- Step 3: Full-Screen -->
+  <div class="step" id="stepFullScreen">
+    <h2>Enable Full-Screen Mode</h2>
+    <p>This is required to start the exam. Please enter full-screen before starting.</p>
+    <button class="main-btn" onclick="enableFullScreen()">Enter Full-Screen</button>
+    <button class="main-btn" id="startExamBtn" disabled onclick="startExam()">✅ Start Exam</button>
+  </div>
+
+</div>
+
+<script>
+const studentId = localStorage.getItem("studentId") || 1;
+let examId = localStorage.getItem("currentExamId");
+
+let stepsPassed = {webcam:false, mic:false, browser:false, screen:false, network:false};
+
+// Move to next step
+function nextStep(){
+  const active = document.querySelector('.step.active');
+  active.classList.remove('active');
+  if(active.nextElementSibling) active.nextElementSibling.classList.add('active');
+}
+
+// ===== Step 2 Checks =====
+function checkWebcam(){
+  navigator.mediaDevices.getUserMedia({video:true})
+    .then(stream=>{
+      document.getElementById('webcamPreview').srcObject=stream;
+      document.getElementById('webcamStatus').innerText='OK';
+      stepsPassed.webcam=true;
+      enableNextButton();
+    })
+    .catch(()=>{ document.getElementById('webcamStatus').innerText='Failed'; });
+}
+
+function checkMic(){
+  navigator.mediaDevices.getUserMedia({audio:true})
+    .then(()=>{ document.getElementById('micStatus').innerText='OK'; stepsPassed.mic=true; enableNextButton(); })
+    .catch(()=>{ document.getElementById('micStatus').innerText='Failed'; });
+}
+
+function checkBrowser(){
+  const ua = navigator.userAgent;
+  if(/Chrome|Firefox|Edg/.test(ua)){
+    document.getElementById('browserStatus').innerText='OK'; stepsPassed.browser=true; enableNextButton();
+  } else { document.getElementById('browserStatus').innerText='Unsupported'; }
+}
+
+function checkScreen(){
+  if(window.innerWidth>=1024 && window.innerHeight>=600){
+    document.getElementById('screenStatus').innerText='OK'; stepsPassed.screen=true; enableNextButton();
+  } else { document.getElementById('screenStatus').innerText='Too small'; }
+}
+
+function checkNetwork(){
+  fetch('/favicon.ico', {cache:'no-store'})
+    .then(()=>{ document.getElementById('networkStatus').innerText='OK'; stepsPassed.network=true; enableNextButton(); })
+    .catch(()=>{ document.getElementById('networkStatus').innerText='Failed'; });
+}
+
+// Enable next button only if all checks pass
+function enableNextButton(){
+  const allPassed = Object.values(stepsPassed).every(v=>v===true);
+  document.getElementById('nextFullScreenBtn').disabled = !allPassed;
+}
+
+// ===== Step 3 Full-Screen =====
+function enableFullScreen(){
+  const elem = document.documentElement;
+  if(elem.requestFullscreen) elem.requestFullscreen();
+  else if(elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+  else if(elem.msRequestFullscreen) elem.msRequestFullscreen();
+
+  document.addEventListener('fullscreenchange', () => {
+    document.getElementById('startExamBtn').disabled = false;
+  });
+}
+
+// ===== ✅ Start Exam =====
+function startExam(){
+  if(!examId) {
+    alert("Exam not selected or not available.");
+    return;
+  }
+
+  // ✅ Corrected Endpoint (matches backend)
+  fetch(`/api/exams/${examId}/startAndFetch?studentId=${studentId}`, {method:'POST'})
+    .then(async res=>{
+      if(res.ok){
+        window.location.href='/student/student-exam.html';
+      } else {
+        const errMsg = await res.text();
+        alert("Cannot start exam: " + errMsg);
+      }
+    })
+    .catch(err=>alert("Cannot start exam: " + err));
+}
+
+// ===== Stop webcam on unload =====
+window.addEventListener('beforeunload', ()=>{
+  const video = document.getElementById('webcamPreview');
+  if(video.srcObject){
+    video.srcObject.getTracks().forEach(track => track.stop());
+  }
+});
+</script>
+</body>
+</html>

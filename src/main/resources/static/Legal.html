@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legal Information | ProctoVision AI</title>
+  <!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #101428;
+      color: #e9e7ff;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    h2 {
+      margin-top: 25px;
+      color: #21d4fd;
+      font-size: 1.4rem;
+      border-bottom: 1px solid #21d4fd;
+      padding-bottom: 5px;
+    }
+
+    p {
+      color: #cfcfff;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+
+    ul {
+      margin-left: 20px;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+    }
+
+    .btn-home {
+      display: inline-block;
+      margin: 15px 0;
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #21d4fd, #7c5cff);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1>Legal Information</h1>
+
+    <!-- Legal Section -->
+    <section id="legal">
+      <h2>Legal</h2>
+      <p>ProctoVision AI is committed to operating in accordance with applicable laws and regulations. All users must comply with our terms of use while accessing our platform.</p>
+    </section>
+
+    <!-- Privacy Policy Section -->
+    <section id="privacy-policy">
+      <h2>Privacy Policy</h2>
+      <p>We value your privacy and are committed to protecting your personal data. This policy explains how we collect, use, and safeguard your information:</p>
+      <ul>
+        <li>Collection of personal and usage data.</li>
+        <li>Use of information for service improvement.</li>
+        <li>Data storage and security measures.</li>
+        <li>Third-party sharing guidelines.</li>
+      </ul>
+    </section>
+
+    <!-- Terms of Service Section -->
+    <section id="terms-of-service">
+      <h2>Terms of Service</h2>
+      <p>By using ProctoVision AI, you agree to the following terms:</p>
+      <ul>
+        <li>Users are responsible for their account security.</li>
+        <li>ProctoVision AI reserves the right to suspend accounts violating policies.</li>
+        <li>Intellectual property rights are retained by ProctoVision AI.</li>
+        <li>Use of the platform is at your own risk.</li>
+      </ul>
+    </section>
+
+    <!-- Security Section -->
+    <section id="security">
+      <h2>Security</h2>
+      <p>We implement industry-standard security measures to protect your data and ensure safe access:</p>
+      <ul>
+        <li>Encrypted data storage and transfer.</li>
+        <li>Regular system audits and monitoring.</li>
+        <li>Access control and authentication protocols.</li>
+        <li>Continuous improvement of security practices.</li>
+      </ul>
+    </section>
+
+    <!-- Back to Home Button (Bottom) -->
+    <a href="home.html" class="btn-home">← Back to Home</a>
+  </div>
+</body>
+</html>

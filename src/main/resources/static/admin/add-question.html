@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin - Add Questions</title>
+<link rel="icon" type="image/png" href="../images/logoprocto.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* === ProctoVision.AI Dashboard Theme === */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:#f4f6fb;
+  color:#333;
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:250px;
+  background:linear-gradient(180deg,#2a2e5c,#3f51b5);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+  box-shadow:3px 0 10px rgba(0,0,0,0.1);
+}
+.sidebar h2{
+  text-align:center;
+  margin:1.5em 0;
+  font-size:1.8em;
+  font-weight:700;
+  letter-spacing:1px;
+}
+.sidebar nav a{
+  display:flex;
+  align-items:center;
+  padding:1em 2em;
+  color:#fff;
+  text-decoration:none;
+  font-weight:500;
+  border-left:4px solid transparent;
+  transition:all .3s ease;
+}
+.sidebar nav a i{margin-right:10px;font-size:1.2em;}
+.sidebar nav a.active,.sidebar nav a:hover{
+  background:rgba(255,255,255,0.15);
+  border-left:4px solid #ff4081;
+}
+
+/* MAIN */
+.main-content{
+  flex:1;
+  padding:2em;
+  background:#f4f6fb;
+}
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:2em;
+}
+header h1{
+  font-size:1.8em;
+  color:#3f51b5;
+  font-weight:700;
+}
+
+/* FORM ELEMENTS */
+select,input,textarea,button{
+  width:100%;
+  margin:.6em 0;
+  padding:.8em 1em;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:1em;
+  transition:.3s;
+}
+input,select,textarea{
+  background:#fff;
+  color:#333;
+  box-shadow:0 2px 5px rgba(0,0,0,0.05);
+}
+input:focus,select:focus,textarea:focus{
+  outline:none;
+  border-color:#3f51b5;
+  box-shadow:0 0 0 3px rgba(63,81,181,0.2);
+}
+textarea{
+  resize:vertical;
+  min-height:80px;
+}
+
+/* BUTTONS */
+button{
+  background:linear-gradient(135deg,#3f51b5,#5c6bc0);
+  color:#fff;
+  border:none;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(63,81,181,0.3);
+}
+button:hover{
+  background:linear-gradient(135deg,#3949ab,#5c6bc0);
+  box-shadow:0 5px 12px rgba(63,81,181,0.4);
+}
+
+/* TEST CASE CONTAINER */
+.test-case{
+  background:#fff;
+  border-radius:10px;
+  padding:1em;
+  box-shadow:0 3px 10px rgba(0,0,0,0.08);
+  margin-bottom:1em;
+}
+.test-case button{
+  background:#ff5252;
+  border:none;
+  color:#fff;
+  padding:.5em 1em;
+  border-radius:6px;
+  margin-top:.5em;
+  font-weight:600;
+}
+.test-case button:hover{
+  background:#e53935;
+}
+
+/* CODING SECTION */
+#codingDiv h3{
+  margin-bottom:.8em;
+  color:#3f51b5;
+}
+
+/* LOGOUT MODAL */
+#logoutModal{
+  display:none;
+  position:fixed;
+  z-index:1000;
+  left:0;top:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+#logoutModal>div{
+  background:#fff;
+  padding:2em;
+  border-radius:12px;
+  max-width:400px;
+  width:90%;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+#logoutModal h3{
+  color:#3f51b5;
+  font-size:22px;
+  margin-bottom:10px;
+}
+#logoutModal p{
+  color:#555;
+  margin-bottom:25px;
+}
+#logoutModal button{
+  padding:10px 20px;
+  border:none;
+  border-radius:8px;
+  font-weight:600;
+  cursor:pointer;
+  font-size:15px;
+}
+#cancelLogout{
+  background:#ccc;
+  color:#333;
+}
+#confirmLogout{
+  background:#ff4d4f;
+  color:#fff;
+}
+#cancelLogout:hover{background:#b0b0b0;}
+#confirmLogout:hover{background:#e53935;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  body{flex-direction:column;}
+  .sidebar{
+    width:100%;
+    flex-direction:row;
+    overflow-x:auto;
+    padding-top:0.5em;
+  }
+  .sidebar nav a{
+    flex:1;
+    justify-content:center;
+    padding:0.8em;
+  }
+}
+</style>
+</head>
+
+<body>
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>Admin</h2>
+    <nav>
+        <a href="dashboard.html"><i>🏠</i>Dashboard</a>
+        <a href="exams.html"><i>📝</i>Exams</a>
+        <a href="questions.html"><i>❓</i>All Questions</a>
+        <a href="add-question.html" class="active"><i>➕</i>Add Question</a>
+        <a href="results.html"><i>📊</i>Results</a>
+        <a href="proctoring.html"><i>🎥</i>Proctoring</a>
+        <a href="../login.html" id="logoutBtn"><i>🚪</i>Logout</a>
+    </nav>
+</div>
+
+<!-- Logout Modal -->
+<div id="logoutModal">
+  <div>
+    <h3>Confirm Logout</h3>
+    <p>Are you sure you want to log out?</p>
+    <div style="display:flex;justify-content:center;gap:15px;">
+      <button id="cancelLogout">Cancel</button>
+      <button id="confirmLogout">Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <header><h1>Add Question</h1></header>
+
+    <select id="examSelect"></select>
+    <input type="text" id="questionTitle" placeholder="Question Title">
+
+    <select id="questionType">
+        <option value="MCQ">MCQ</option>
+        <option value="CODING">CODING</option>
+    </select>
+
+    <div id="mcqOptionsDiv">
+        <input type="text" class="mcqOption" placeholder="Option 1">
+        <input type="text" class="mcqOption" placeholder="Option 2">
+        <input type="text" class="mcqOption" placeholder="Option 3">
+        <input type="text" class="mcqOption" placeholder="Option 4">
+        <input type="text" id="mcqAnswer" placeholder="Correct Answer">
+    </div>
+
+    <div id="codingDiv" style="display:none;">
+        <h3>Coding Test Cases</h3>
+        <div id="testCasesContainer"></div>
+        <button id="addTestCaseBtn">Add Test Case</button>
+    </div>
+
+    <button id="saveQuestionBtn">Save Question</button>
+</div>
+
+<script>
+// ---- Original JS logic preserved exactly ----
+fetch('/api/admin/exams')
+.then(res=>res.json())
+.then(exams=>{
+    const select=document.getElementById('examSelect');
+    select.innerHTML='<option value="">Select Exam</option>';
+    exams.forEach(e=>{
+        const opt=document.createElement('option');
+        opt.value=e.id;
+        opt.textContent=e.title;
+        select.appendChild(opt);
+    });
+});
+
+document.getElementById('questionType').addEventListener('change', e=>{
+    if(e.target.value==='MCQ'){
+        document.getElementById('mcqOptionsDiv').style.display='block';
+        document.getElementById('codingDiv').style.display='none';
+    } else {
+        document.getElementById('mcqOptionsDiv').style.display='none';
+        document.getElementById('codingDiv').style.display='block';
+    }
+});
+
+document.getElementById('addTestCaseBtn').addEventListener('click',()=>{
+    const container=document.getElementById('testCasesContainer');
+    const div=document.createElement('div'); div.className='test-case';
+    div.innerHTML=`<textarea class="testInput" placeholder="Input"></textarea>
+                   <textarea class="testOutput" placeholder="Expected Output"></textarea>
+                   <label>Hidden: <input type="checkbox" class="testHidden"></label>
+                   <button onclick="this.parentElement.remove()">Remove</button>`;
+    container.appendChild(div);
+});
+
+document.getElementById('saveQuestionBtn').addEventListener('click', async ()=>{
+    const examId=document.getElementById('examSelect').value;
+    const title=document.getElementById('questionTitle').value;
+    const type=document.getElementById('questionType').value;
+
+    if(!examId || !title) return alert('Select exam and enter title');
+
+    let questionData = {
+        exam: { id: Number(examId) },
+        title,
+        type
+    };
+
+    if(type==='MCQ'){
+        const options = Array.from(document.getElementsByClassName('mcqOption')).map(i=>i.value);
+        const answer = document.getElementById('mcqAnswer').value;
+        questionData.options = options;
+        questionData.answer = answer;
+    }
+
+    const res = await fetch('/api/admin/questions',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(questionData)
+    });
+
+    if(!res.ok){ alert("Error saving question"); return; }
+    const savedQuestion = await res.json();
+
+    if(type==='CODING'){
+        const testCases = Array.from(document.getElementsByClassName('test-case')).map(tc=>{
+            return {
+                inputData: tc.querySelector('.testInput').value,
+                expectedOutput: tc.querySelector('.testOutput').value,
+                hidden: tc.querySelector('.testHidden').checked
+            };
+        });
+
+        for(const t of testCases){
+            await fetch(`/api/admin/coding-test-cases/question/${savedQuestion.id}`,{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify(t)
+            });
+        }
+    }
+
+    alert('Question saved successfully');
+    location.reload();
+});
+
+// Logout modal logic
+const logoutBtn = document.getElementById("logoutBtn");
+const logoutModal = document.getElementById("logoutModal");
+const cancelLogout = document.getElementById("cancelLogout");
+const confirmLogout = document.getElementById("confirmLogout");
+logoutBtn.addEventListener("click", e=>{ e.preventDefault(); logoutModal.style.display="flex"; });
+cancelLogout.addEventListener("click", ()=> logoutModal.style.display="none");
+confirmLogout.addEventListener("click", ()=>{
+    localStorage.clear();
+    logoutModal.style.display="none";
+    window.location.href="../login.html";
+});
+window.addEventListener("click", e=>{ if(e.target===logoutModal) logoutModal.style.display="none"; });
+</script>
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FAQ — ProctoVision.ai</title>
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/robot.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+<meta name="description" content="Answers to common questions about AI-proctored exams: setup, privacy, detection, accessibility, policies, and troubleshooting." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0b1020;        /* deep navy */
+    --card:#0f1733;      /* card navy */
+    --ink:#eef2ff;       /* text */
+    --muted:#a7b0d9;
+    --brand:#0d47a1;     /* primary */
+    --brand-2:#00c8ff;   /* accent */
+    --good:#15c37e;
+    --warn:#ffb020;
+    --bad:#ff5d5d;
+    --ring:rgba(0,200,255,.35);
+    --radius:16px;
+    --shadow:0 12px 40px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1200px 600px at -10% -10%, rgba(13,71,161,.25), transparent 60%),
+      radial-gradient(900px 500px at 110% 10%, rgba(0,200,255,.18), transparent 60%),
+      linear-gradient(180deg,#070a17,#0b1020 45%,#0b1020 100%);
+  }
+
+  /* Header */
+  .hero{
+    position:relative;
+    padding:54px 20px 36px;
+    text-align:center;
+    overflow:hidden;
+  }
+  .hero .title{
+    font-size:clamp(28px,4.2vw,42px);
+    line-height:1.1;
+    font-weight:800;
+    letter-spacing:.2px;
+    margin:0 0 10px;
+    background:linear-gradient(90deg,#7cc9ff 0%,#b8b8ff 40%,#ffffff 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p{margin:0;color:var(--muted);font-size:clamp(14px,1.6vw,16px)}
+  .hero-badge{
+    display:inline-flex;gap:10px;align-items:center;
+    background:linear-gradient(90deg,#0d47a1,#00c8ff);
+    color:#fff;padding:8px 12px;border-radius:999px;
+    font-size:12px;font-weight:600;margin-bottom:14px;box-shadow:var(--shadow)
+  }
+  .hero-badge svg{height:16px;width:16px}
+
+  /* Search + filters bar */
+  .controls{
+    max-width:1050px;margin:24px auto 12px;padding:0 16px;
+    display:grid;grid-template-columns:1fr;gap:12px;
+  }
+  .search{
+    position:relative;background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.12);border-radius:12px;display:flex;align-items:center;
+    padding:10px 12px;backdrop-filter:blur(8px)
+  }
+  .search input{
+    appearance:none;outline:0;border:0;background:transparent;color:var(--ink);
+    font-size:15px;width:100%;padding:6px 10px;
+  }
+  .search svg{opacity:.8}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    user-select:none;cursor:pointer;border:1px solid rgba(255,255,255,.14);
+    color:var(--ink);background:rgba(255,255,255,.04);
+    padding:8px 10px;border-radius:999px;font-size:12px;font-weight:600;
+    transition:all .2s ease;
+  }
+  .chip.active,.chip:hover{border-color:transparent;background:linear-gradient(90deg,#0d47a1,#00c8ff);box-shadow:0 6px 22px rgba(0,200,255,.25)}
+
+  /* FAQ list */
+  .wrap{max-width:1050px;margin:0 auto 60px;padding:0 16px}
+  .card{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden
+  }
+  .faq{
+    display:grid;gap:10px;padding:14px;
+  }
+  .item{
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.04);
+    border-radius:12px;overflow:hidden;transition:border-color .2s ease, background .2s ease
+  }
+  .item[hidden]{display:none !important}
+  .q{
+    width:100%;text-align:left;background:transparent;border:0;outline:0;
+    color:var(--ink);padding:14px 44px 14px 14px;cursor:pointer;position:relative;font-weight:700;
+    font-size:15.5px;line-height:1.35;
+  }
+  .q:focus-visible{box-shadow:0 0 0 3px var(--ring);border-radius:12px}
+  .q .tag{margin-left:8px;font-size:11px;font-weight:700;opacity:.7}
+  .q .cat{color:#89d3ff}
+  .q .badge{color:#9ae6b4}
+  .q .chev{
+    position:absolute;right:12px;top:50%;transform:translateY(-50%) rotate(0deg);
+    transition:transform .2s ease;opacity:.85
+  }
+  .item.open .q .chev{transform:translateY(-50%) rotate(180deg)}
+  .a{
+    max-height:0;overflow:hidden;transition:max-height .26s ease;
+    padding:0 14px 0;color:#d7dcff
+  }
+  .item.open .a{padding:0 14px 14px}
+  .a p{margin:12px 0}
+  .a ul{margin:10px 0 0 18px}
+  .a code{background:rgba(0,0,0,.35);padding:2px 6px;border-radius:6px}
+
+  .meta{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);color:var(--muted);font-size:12px
+  }
+
+  /* Footer CTA */
+  .cta{
+    margin:24px auto 80px;max-width:1050px;padding:16px
+  }
+  .cta .inner{
+    display:grid;gap:14px;align-items:center;grid-template-columns:1fr auto;
+    background:linear-gradient(90deg,rgba(13,71,161,.85),rgba(0,200,255,.75));
+    border-radius:18px;padding:22px 22px;border:1px solid rgba(255,255,255,.2);box-shadow:var(--shadow)
+  }
+  .cta h3{margin:0 0 6px;font-size:20px}
+  .cta p{margin:0;color:#f4f9ff}
+  .cta a{
+    text-decoration:none;color:#0b1020;background:#fff;font-weight:800;border-radius:12px;
+    padding:10px 14px;display:inline-flex;align-items:center;gap:8px
+  }
+
+  /* Search highlight */
+  mark{
+    background: linear-gradient(90deg, rgba(0,200,255,.25), rgba(124,92,255,.25));
+    color:inherit; padding:0 2px; border-radius:3px;
+  }
+
+  @media (max-width:720px){
+    .cta .inner{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<button onclick="window.location.href='home.html'" 
+style="
+  background:#0d47a1;
+  color:white;
+  border:none;
+  padding:10px 18px;
+  font-size:14px;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:0.2s;
+">
+← Back
+</button>
+
+<header class="hero" role="banner">
+  <span class="hero-badge" aria-label="Help Center">
+    <!-- lifebuoy icon -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M19.07 4.93l-4.24 4.24M9.17 14.83l-4.24 4.24"/></svg>
+    Need Help? FAQ
+  </span>
+  <h1 class="title">ProctoVision.ai — Frequently Asked Questions</h1>
+  <p>Everything about AI-proctored exams: setup, privacy, detection, accessibility, and support.</p>
+</header>
+
+<section class="controls" aria-label="Search and filters">
+  <label class="search" for="faqSearch">
+    <!-- search icon -->
+    <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" fill="none" style="margin-right:8px">
+      <circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke-width="2"/>
+    </svg>
+    <input id="faqSearch" type="search" placeholder="Search questions (e.g., webcam, privacy, ID check, false positives)…" autocomplete="off" />
+  </label>
+
+  <div class="chips" role="tablist" aria-label="FAQ categories">
+    <button class="chip active" data-cat="all" role="tab" aria-selected="true">All</button>
+    <button class="chip" data-cat="setup" role="tab">Setup</button>
+    <button class="chip" data-cat="privacy" role="tab">Privacy</button>
+    <button class="chip" data-cat="detection" role="tab">AI Detection</button>
+    <button class="chip" data-cat="policy" role="tab">Policies</button>
+    <button class="chip" data-cat="access" role="tab">Accessibility</button>
+    <button class="chip" data-cat="troubleshoot" role="tab">Troubleshooting</button>
+    <button class="chip" data-cat="instructor" role="tab">For Instructors</button>
+  </div>
+</section>
+
+<main class="wrap" id="faq" aria-label="Frequently Asked Questions">
+  <div class="card">
+    <div class="faq" id="faqList">
+
+      <!-- ===== Items start ===== -->
+      <!-- Each item: data-cat="category" and id for deep link -->
+      <article class="item" data-cat="setup" id="reqs">
+        <button class="q" aria-expanded="false">
+          What are the minimum system requirements? <span class="tag cat">Setup</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a" role="region" aria-labelledby="reqs">
+          <p>Use a modern desktop/laptop with a working webcam and microphone, a stable internet connection (&ge; 2 Mbps up/down), and a supported browser (latest Chrome, Edge, or Firefox). Close background apps for the best performance.</p>
+          <ul>
+            <li>OS: Windows 10+, macOS 11+, or Linux (Ubuntu 20.04+)</li>
+            <li>CPU/RAM: Dual-core / 8 GB+ recommended</li>
+            <li>Resolution: 1280×720 or higher</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="item" data-cat="setup" id="permissions">
+        <button class="q" aria-expanded="false">
+          Why does the test need camera and microphone access? <span class="tag cat">Setup</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a" role="region" aria-labelledby="permissions">
+          <p>The system analyzes video/audio feeds to monitor test integrity (face presence, multiple people, unusual sounds). Permissions are used only during the exam session and can be revoked afterward in your browser settings.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="setup" id="network">
+        <button class="q" aria-expanded="false">
+          What happens if my internet drops during the exam? <span class="tag cat">Setup</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Your progress is auto-saved periodically. If the connection drops, the exam will pause and attempt to reconnect. On recovery, you can resume where you left off; your proctor/instructor will see the disconnection in the session log.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="privacy" id="privacy">
+        <button class="q" aria-expanded="false">
+          How is my data used and stored? <span class="tag cat">Privacy</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>We collect only the data needed for exam integrity (video, audio, screen/keystroke signals when enabled, device and network metadata). Data is encrypted in transit and at rest, retained for a limited period per your institution’s policy, and never sold.</p>
+          <p>Compliance: GDPR/CCPA aligned; FERPA support for educational records. See your institution’s privacy notice for retention windows.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="privacy" id="roomscan">
+        <button class="q" aria-expanded="false">
+          Do you require a room scan? <span class="tag cat">Privacy</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Room scans are configurable by the exam owner. If enabled, you’ll be prompted to briefly pan your camera to show your workspace. Scans are stored like other session videos and reviewed only for integrity concerns.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="detection" id="signals">
+        <button class="q" aria-expanded="false">
+          What behaviors does the AI flag? <span class="tag cat">AI Detection</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>The AI detects signals such as multiple faces, frequent gaze off-screen, phone usage, whispering or other voices, screen switching, and suspicious objects. Flags are indicators, not guilt statements—human review is required.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="detection" id="falsepos">
+        <button class="q" aria-expanded="false">
+          How do you handle false positives? <span class="tag cat">AI Detection</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Every AI flag includes context (timestamp, clip, and signal type). Instructors can dismiss flags with comments. System thresholds are tuned to minimize noise, and quality checks continually improve models to reduce false alerts.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="policy" id="idcheck">
+        <button class="q" aria-expanded="false">
+          How does identity verification work? <span class="tag cat">Policies</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Prior to the exam, you may be asked to capture an ID photo and a live selfie. A liveness check ensures the face is real, then a match score verifies the ID photo vs. selfie. Only exam admins can review verification results.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="policy" id="retake">
+        <button class="q" aria-expanded="false">
+          Can I retake if something goes wrong? <span class="tag cat">Policies</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Retake permissions depend on your institution’s policy. Instructors can review logs and decide whether to grant additional attempts or adjust time to compensate for outages.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="access" id="accessibility">
+        <button class="q" aria-expanded="false">
+          Accessibility and accommodations <span class="tag cat">Accessibility</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>The platform supports extended time, breaks, alternative assessments, captions for instructions, high-contrast mode, and screen-reader compatible UI (ARIA). Contact your disability services for approved accommodations.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="setup" id="browser">
+        <button class="q" aria-expanded="false">
+          Do I need a lockdown browser? <span class="tag cat">Setup</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Lockdown is optional. Many exams use standard Chrome/Edge/Firefox with screen monitoring enabled. If your exam requires lockdown, you’ll be prompted to install and verify it before starting.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="troubleshoot" id="audio">
+        <button class="q" aria-expanded="false">
+          The system can’t hear me — what should I do? <span class="tag cat">Troubleshooting</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <ul>
+            <li>Check OS input device and volume</li>
+            <li>Ensure the browser has microphone permission</li>
+            <li>Close other apps using the mic (Zoom, Teams)</li>
+            <li>Reload the page and rerun the pre-exam check</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="item" data-cat="troubleshoot" id="camera">
+        <button class="q" aria-expanded="false">
+          Camera not detected or too dark <span class="tag cat">Troubleshooting</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Switch to a different USB camera, sit facing light (not with a bright window behind you), clean the lens, and ensure no other app is using the camera.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="privacy" id="retention">
+        <button class="q" aria-expanded="false">
+          How long are recordings kept? <span class="tag cat">Privacy</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>By default, records are retained for the period defined by your institution (commonly 30–180 days). After expiration, data is automatically purged from primary storage and backups per policy.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="instructor" id="reports">
+        <button class="q" aria-expanded="false">
+          What do instructors receive after an exam? <span class="tag cat">For Instructors</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>An integrity report with an overall risk score, timeline of flags, clips for review, identity verification status, and environment checks. Instructors can annotate, dismiss flags, and export reports.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="instructor" id="integrations">
+        <button class="q" aria-expanded="false">
+          LMS integrations and SSO <span class="tag cat">For Instructors</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Supports LTI with major LMSs (Canvas, Moodle, Blackboard) and SSO (SAML/OIDC). Syncs rosters, grades, and test settings; role-based access controls enforce least privilege.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="policy" id="ethics">
+        <button class="q" aria-expanded="false">
+          Is AI proctoring fair? <span class="tag cat">Policies</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>We design for fairness via bias testing, regular model audits, and human-in-the-loop review. Students can appeal flags; instructors must confirm any academic decisions with holistic evidence.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="setup" id="mobile">
+        <button class="q" aria-expanded="false">
+          Can I use a phone or tablet? <span class="tag cat">Setup</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Most exams require a laptop/desktop. Some assessments allow a companion phone as a second camera; if enabled, you’ll see a QR code to pair the device during check-in.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="troubleshoot" id="performance">
+        <button class="q" aria-expanded="false">
+          Video is lagging — how can I improve performance? <span class="tag cat">Troubleshooting</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <ul>
+            <li>Use a wired connection or sit closer to Wi-Fi</li>
+            <li>Close heavy apps/tabs; stop background downloads</li>
+            <li>Plug in your laptop; performance modes may throttle on battery</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="item" data-cat="instructor" id="manual-review">
+        <button class="q" aria-expanded="false">
+          Can proctors review live or only after? <span class="tag cat">For Instructors</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Both. Live dashboards surface active risks; proctors can chat or escalate. Afterward, session replays and event filters support thorough investigation.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="policy" id="consent">
+        <button class="q" aria-expanded="false">
+          Do I have to consent to recording? <span class="tag cat">Policies</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Institutions typically require consent before starting. If you do not consent, contact your instructor for alternatives. Starting the exam indicates acceptance of the exam’s integrity policy.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="privacy" id="datashare">
+        <button class="q" aria-expanded="false">
+          Do you share data with third parties? <span class="tag cat">Privacy</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>Data is shared only with service providers necessary to run the exam (e.g., cloud infrastructure) under strict contracts. We do not sell personal data or use recordings to train unrelated models.</p>
+        </div>
+      </article>
+
+      <article class="item" data-cat="setup" id="precheck">
+        <button class="q" aria-expanded="false">
+          What is the pre-exam system check? <span class="tag cat">Setup</span>
+          <svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="a">
+          <p>A guided checklist validates camera, mic, bandwidth, browser permissions, and display configuration. Fix any red items before launching the exam to avoid interruptions.</p>
+        </div>
+      </article>
+      <!-- ===== Items end ===== -->
+
+      <div class="meta">
+        <span id="matchCount">Showing all questions</span>
+        <a href="#top" id="backToTop" style="color:#bfe8ff;text-decoration:none">Back to top ↑</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section class="cta" aria-label="Still need help">
+  <div class="inner">
+    <div>
+      <h3>Still need help?</h3>
+      <p>Chat with support or browse the full guide. We respond fast during exam windows.</p>
+    </div>
+    <a href="home.html#contact" aria-label="Contact support">
+      <!-- chat icon -->
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8z"/></svg>
+      Contact Support
+    </a>
+  </div>
+</section>
+
+<!-- FAQ schema (SEO) -->
+<script type="application/ld+json" id="faqSchema">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type":"Question","name":"What are the minimum system requirements?","acceptedAnswer":{"@type":"Answer","text":"Use a modern desktop/laptop with webcam and microphone, 2 Mbps+ internet, and a supported browser (latest Chrome, Edge, Firefox). Close background apps."}},
+    {"@type":"Question","name":"Why does the test need camera and microphone access?","acceptedAnswer":{"@type":"Answer","text":"The system analyzes video/audio feeds to monitor exam integrity and uses permissions only during the session."}},
+    {"@type":"Question","name":"What happens if my internet drops during the exam?","acceptedAnswer":{"@type":"Answer","text":"Progress is auto-saved. The exam pauses and reconnects; you resume where you left off and the log shows the outage."}},
+    {"@type":"Question","name":"How is my data used and stored?","acceptedAnswer":{"@type":"Answer","text":"We collect the minimum necessary data, encrypt it in transit and at rest, retain per policy, and never sell it."}},
+    {"@type":"Question","name":"What behaviors does the AI flag?","acceptedAnswer":{"@type":"Answer","text":"Signals like multiple faces, off-screen gaze, other voices, phone usage, and screen switching. Human review confirms outcomes."}}
+  ]
+}
+</script>
+
+<script>
+  // ===== Accordion logic with deep links =====
+  const items = [...document.querySelectorAll('.item')];
+  const countEl = document.getElementById('matchCount');
+  const searchEl = document.getElementById('faqSearch');
+  const chips = [...document.querySelectorAll('.chip')];
+
+  function setOpen(item, open){
+    item.classList.toggle('open', open);
+    const a = item.querySelector('.a');
+    if(open){
+      // auto-height measure for smooth expand
+      a.style.maxHeight = a.scrollHeight + 'px';
+      item.querySelector('.q').setAttribute('aria-expanded','true');
+    } else {
+      a.style.maxHeight = 0;
+      item.querySelector('.q').setAttribute('aria-expanded','false');
+    }
+  }
+
+  // Toggle on question click
+  items.forEach(it=>{
+    const btn = it.querySelector('.q');
+    btn.addEventListener('click', ()=>{
+      const open = !it.classList.contains('open');
+      setOpen(it, open);
+      // collapse others lightly (optional)
+      items.forEach(o=>{ if(o!==it) setOpen(o, false); });
+      // update hash for deep linking
+      if(open) history.replaceState(null,'','#'+it.id);
+    });
+  });
+
+  // Expand if hash present
+  function openHash(){
+    if(location.hash){
+      const target = document.querySelector(location.hash);
+      if(target){ setOpen(target,true); target.scrollIntoView({behavior:'smooth', block:'center'}) }
+    }
+  }
+  window.addEventListener('hashchange', openHash);
+  openHash();
+
+  // ===== Search + highlight =====
+  function normalize(s){ return s.toLowerCase(); }
+
+  function clearMarks(el){
+    el.querySelectorAll('mark').forEach(m=>{
+      const text = document.createTextNode(m.textContent);
+      m.parentNode.replaceChild(text, m);
+      m.parentNode.normalize();
+    });
+  }
+  function highlight(el, term){
+    if(!term) return;
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+    const parts = [];
+    while(walker.nextNode()){
+      const node = walker.currentNode;
+      const val = node.nodeValue;
+      const idx = val.toLowerCase().indexOf(term);
+      if(idx>-1 && val.trim().length){
+        const span = document.createElement('span');
+        const before = document.createTextNode(val.slice(0,idx));
+        const mark = document.createElement('mark'); mark.textContent = val.slice(idx, idx+term.length);
+        const after = document.createTextNode(val.slice(idx+term.length));
+        span.append(before, mark, after);
+        node.parentNode.replaceChild(span, node);
+      }
+    }
+  }
+
+  let activeCat = 'all';
+  function applyFilters(){
+    const q = normalize(searchEl.value.trim());
+    let shown = 0;
+    items.forEach(it=>{
+      clearMarks(it);
+      const catOk = activeCat==='all' || it.dataset.cat===activeCat;
+      const text = normalize(it.textContent);
+      const match = !q || text.includes(q);
+      const visible = catOk && match;
+      it.hidden = !visible;
+      if(visible){
+        shown++;
+        if(q) highlight(it, q);
+      } else {
+        setOpen(it,false);
+      }
+    });
+    countEl.textContent = q || activeCat!=='all'
+      ? `Showing ${shown} result${shown!==1?'s':''}`
+      : 'Showing all questions';
+  }
+
+  searchEl.addEventListener('input', applyFilters);
+
+  chips.forEach(ch=>{
+    ch.addEventListener('click', ()=>{
+      chips.forEach(c=>c.classList.remove('active'));
+      ch.classList.add('active');
+      activeCat = ch.dataset.cat;
+      applyFilters();
+    });
+  });
+
+  // Keyboard a11y: open with Enter/Space
+  document.querySelectorAll('.q').forEach(btn=>{
+    btn.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); btn.click(); }
+    });
+  });
+
+  // Back to top link behavior
+  document.getElementById('backToTop').addEventListener('click', e=>{
+    e.preventDefault(); window.scrollTo({top:0,behavior:'smooth'});
+    history.replaceState(null,'','#');
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProctoVision.Ai Voice Assistant</title>
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0f111a, #1a1b2a);
+    color:#fff;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:20px;
+    height:100vh;
+    margin:0;
+  }
+  h1 { margin-top:20px; font-size:2em; text-align:center; }
+  #chat {
+    width:90%;
+    max-width:600px;
+    background:#222;
+    color:#fff;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+    overflow-y:auto;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:20px;
+  }
+  .message {
+    padding:12px 18px;
+    border-radius:15px;
+    max-width:75%;
+    word-wrap:break-word;
+  }
+  .user { background:#444; color:#fff; align-self:flex-end; font-weight:600; }
+  .ai { background:#555; color:#fff; align-self:flex-start; font-weight:500; }
+  #status { margin-bottom:20px; font-style:italic; color:#aaa; }
+  .mic-icon {
+    font-size:2em;
+    cursor:pointer;
+    background:#333;
+    color:#fff;
+    padding:15px;
+    border-radius:50%;
+    box-shadow:0 5px 15px rgba(0,0,0,0.5);
+    transition:transform 0.2s ease, background 0.2s ease;
+  }
+  .mic-icon.active { background:#555; color:#fff; transform:scale(1.1); }
+  .back-btn {
+    background: rgba(255,255,255,0.2);
+    border:none;
+    padding:8px 15px;
+    border-radius:10px;
+    cursor:pointer;
+    color:#fff;
+    font-weight:600;
+    margin-bottom:15px;
+  }
+  .back-btn:hover {
+    background: rgba(255,255,255,0.4);
+  }
+</style>
+</head>
+<body>
+
+<button class="back-btn" onclick="goHome()">← Back to Home</button>
+<h1>ProctoVision.ai Voice Assistant</h1>
+<div id="chat"></div>
+<div id="status">Click the mic to ask a question</div>
+<div class="mic-icon" id="mic">🎤</div>
+
+<script>
+const chat = document.getElementById('chat');
+const status = document.getElementById('status');
+const mic = document.getElementById('mic');
+
+// Replace with your OpenRouter API key
+const OPENROUTER_KEY = "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";
+
+// Back button function
+function goHome() {
+  window.location.href = "/"; // Change to your homepage URL
+}
+
+// Add chat message
+function addMessage(role, text) {
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// Speak text
+function speakText(text) {
+  if (speechSynthesis.speaking) speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  speechSynthesis.speak(utterance);
+}
+
+// Call AI
+async function askAI(question) {
+  addMessage('user', `You: ${question}`);
+  status.textContent = "AI is thinking...";
+  try {
+    const shortQuestion = "Answer briefly in 1-2 sentences: " + question;
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${OPENROUTER_KEY}`
+      },
+      body: JSON.stringify({
+        model:"gpt-4o-mini",
+        messages:[{role:"user", content:shortQuestion}],
+        max_output_tokens:50
+      })
+    });
+    const data = await response.json();
+    const answer = data?.choices?.[0]?.message?.content || "No answer from AI.";
+    addMessage('ai', `AI: ${answer}`);
+    speakText(answer);
+    status.textContent = "Click the mic to ask a question";
+  } catch(err) {
+    console.error(err);
+    addMessage('ai', "AI: Error fetching response.");
+    status.textContent = "Click the mic to ask a question";
+    
+  }
+}
+
+// Speech Recognition
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'en-US';
+recognition.interimResults = false;
+recognition.continuous = false;
+
+recognition.onresult = (event) => {
+  const question = event.results[0][0].transcript.trim();
+  if(question) askAI(question);
+};
+
+recognition.onerror = (event) => {
+  status.textContent = "Speech recognition error: " + event.error;
+  mic.classList.remove('active');
+};
+
+recognition.onend = () => {
+  mic.classList.remove('active');
+  status.textContent = "Click the mic to ask a question";
+};
+
+// Mic click triggers listening
+mic.addEventListener('click', () => {
+  if(speechSynthesis.speaking) speechSynthesis.cancel();
+  mic.classList.add('active');
+  status.textContent = "Listening...";
+  recognition.start();
+});
+
+// Stop AI speech if user clicks mic again while speaking
+mic.addEventListener('dblclick', () => {
+  if(speechSynthesis.speaking) speechSynthesis.cancel();
+  recognition.stop();
+  mic.classList.remove('active');
+  status.textContent = "Stopped";
+});
+</script>
+  <script src="/voice-control.js"></script>
+
+
+</body>
+</html>

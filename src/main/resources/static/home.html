@@ -1,0 +1,2850 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Favicon -->
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+  <title>ProctoVision.ai — Exam Security. Done Right.</title>
+  <meta name="description"
+    content="MyProctor.ai — Online proctoring to deter, detect, and prevent exam malpractice with content protection, live monitoring, and actionable analytics." />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    /* -----------------------------
+     Design Tokens
+  --------------------------------*/
+  
+    :root {
+      --bg: #0b1020;
+      --bg-soft: #0f1630;
+      --card: #101733;
+      --card-2: #111a3a;
+      --text: #eef2ff;
+      --muted: #b6c0e7;
+      --brand: #7c5cff;
+      --brand-2: #21d4fd;
+      --brand-3: #a6ffcb;
+      --accent: #ff8ab6;
+      --warn: #ffd166;
+      --ok: #4ade80;
+      --radius-xl: 24px;
+      --radius-lg: 18px;
+      --radius: 14px;
+      --shadow-1: 0 10px 30px rgba(0, 0, 0, .35);
+      --shadow-2: 0 6px 18px rgba(0, 0, 0, .28);
+      --glass: linear-gradient(180deg, rgba(255, 255, 255, .06), rgba(255, 255, 255, .02));
+      --grid-max: 1200px;
+    }
+
+    /* -----------------------------
+     Base
+  --------------------------------*/
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Inter, Arial;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(124, 92, 255, .25), transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, rgba(33, 212, 253, .18), transparent 60%),
+        linear-gradient(180deg, #070a17, #0b1020 45%, #0b1020 100%);
+      background-attachment: fixed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--grid-max);
+      margin-inline: auto;
+      padding-inline: 20px
+    }
+
+    .section {
+      padding: 72px 0
+    }
+
+    .muted {
+      color: var(--muted)
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(124, 92, 255, .15);
+      color: #e4ddff;
+      border: 1px solid rgba(124, 92, 255, .35);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      border: 0;
+      cursor: pointer;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+      color: #0b1020;
+      box-shadow: 0 8px 20px rgba(124, 92, 255, .35);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(124, 92, 255, .5)
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, .15);
+      backdrop-filter: blur(6px);
+    }
+
+    .chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1)
+    }
+
+    .grid {
+      display: grid;
+      gap: 24px
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, minmax(0, 1fr))
+    }
+
+    @media (max-width: 1000px) {
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media (max-width: 900px) {
+
+      .grid-3,
+      .grid-2 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    h1 {
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.05;
+      margin: 0 0 16px
+    }
+
+    h2 {
+      font-size: clamp(28px, 3.5vw, 40px);
+      line-height: 1.1;
+      margin: 0 0 10px
+    }
+
+    h3 {
+      font-size: clamp(20px, 2.6vw, 24px);
+      margin: 0 0 8px
+    }
+
+    p {
+      margin: 0 0 14px;
+      color: var(--muted)
+    }
+
+    .lead {
+      font-size: clamp(16px, 2.1vw, 18px);
+      color: #dfe6ff
+    }
+
+    .card {
+      background: var(--glass);
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px 220px at -10% -10%, rgba(255, 255, 255, .08), transparent 60%),
+        radial-gradient(600px 220px at 110% 20%, rgba(124, 92, 255, .08), transparent 60%);
+      pointer-events: none;
+    }
+
+    /* -----------------------------
+     Hero
+  --------------------------------*/
+    .hero {
+      padding: 72px 0 36px;
+    }
+
+    .hero-wrap {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero-wrap {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .stat-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px
+    }
+
+    .illustration {
+      aspect-ratio: 4/3;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(120% 120% at 80% -20%, rgba(33, 212, 253, .25), transparent 60%),
+        linear-gradient(135deg, #0e1637 0%, #0b1020 100%);
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: var(--shadow-1);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(14px);
+      opacity: .85;
+      animation: float 9s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+
+    .orb.o1 {
+      width: 180px;
+      height: 180px;
+      left: -40px;
+      top: -40px;
+      background: radial-gradient(circle at 30% 30%, #7c5cff, transparent 60%)
+    }
+
+    .orb.o2 {
+      width: 220px;
+      height: 220px;
+      right: -60px;
+      top: 20px;
+      background: radial-gradient(circle at 60% 40%, #21d4fd, transparent 60%);
+      animation-delay: 1.5s
+    }
+
+    .orb.o3 {
+      width: 160px;
+      height: 160px;
+      left: 30%;
+      bottom: -40px;
+      background: radial-gradient(circle at 50% 50%, #a6ffcb, transparent 60%);
+      animation-delay: .8s
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-12px)
+      }
+    }
+
+    /* -----------------------------
+     Footer
+  --------------------------------*/
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      padding: 40px 0;
+      color: var(--muted)
+    }
+  </style>
+</head>
+
+<body>
+
+  <main>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg sticky-top" 
+  style="backdrop-filter:blur(12px);background:rgba(10,10,20,0.7);border-bottom:1px solid rgba(255,255,255,0.05);">
+  <div class="container">
+    <!-- Logo -->
+    <a class="navbar-brand d-flex align-items-center" href="#" 
+       style="display:flex;align-items:center;text-decoration:none;transition:all 0.3s ease;">
+      <img src="images/logoprocto.png" alt="ProctoVision Logo"
+           style="height:35px;width:30px;object-fit:contain;transition:transform 0.3s ease,filter 0.3s ease;">
+      <span class="ms-2 fw-bold text-white"
+            style="margin-left:10px;font-size:1.2rem;font-family:Inter,sans-serif;
+                   color:#fff;text-shadow:0 0 8px rgba(33,212,253,0.6);
+                   transition:text-shadow 0.3s ease;">
+        ProctoVision.ai
+      </span>
+      <script>
+        const brand = document.currentScript.parentElement;
+        const img = brand.querySelector('img');
+        const text = brand.querySelector('span');
+        brand.addEventListener('mouseenter', () => {
+          img.style.transform = 'scale(1.1)';
+          img.style.filter = 'drop-shadow(0 0 10px rgba(124,92,255,0.6))';
+          text.style.textShadow = '0 0 12px rgba(124,92,255,0.8)';
+        });
+        brand.addEventListener('mouseleave', () => {
+          img.style.transform = 'scale(1)';
+          img.style.filter = 'none';
+          text.style.textShadow = '0 0 8px rgba(33,212,253,0.6)';
+        });
+      </script>
+    </a>
+
+    <!-- Mobile Menu Button -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+      aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menu -->
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto align-items-lg-center">
+        <!-- Platform Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-3" href="#" id="platformDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false"> Platform </a>
+          <ul class="dropdown-menu" aria-labelledby="platformDropdown">
+            <li><a class="dropdown-item" href="Explore.html">Explore</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item"><a class="nav-link px-3" href="#proctoring">Proctoring</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="#testimonials">Testimonials</a></li>
+        <li class="nav-item"><a class="nav-link px-3" href="#contact">Contact</a></li>
+
+        <!-- Guest Dropdown -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-3" href="#" id="guestDropdown" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false"> Guest </a>
+          <ul class="dropdown-menu" aria-labelledby="guestDropdown">
+            <li><a class="dropdown-item" href="login.html">Student Login</a></li>
+            <li><a class="dropdown-item" href="login.html">Admin Login</a></li>
+            <li><a class="dropdown-item" href="mock_interview.html">Mock Interview</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <!-- Voice Button -->
+      <button id="voiceBtn" title="Voice Control 🎤"
+        style="position:fixed;bottom:18px;right:12px;width:28px;height:28px;
+               border:none;border-radius:50%;background:#fff;color:#1890ff;font-size:13px;
+               box-shadow:0 1px 4px rgba(0,0,0,0.25);cursor:pointer;z-index:9999;
+               display:flex;align-items:center;justify-content:center;">🎤</button>
+      <script src="voice-control.js"></script>
+    </div>
+  </div>
+</nav>
+
+<!-- Styles -->
+<style>
+/* Base navbar links */
+nav .nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+nav .nav-link:hover {
+  background: linear-gradient(90deg, #7c5cff, #21d4fd);
+  color: #fff !important;
+  text-shadow: 0 0 6px #21d4fd;
+}
+
+/* Dropdown Base */
+.dropdown-menu {
+  position: relative;
+  background: rgba(10, 10, 20, 0.65);
+  border: 1px solid rgba(33, 212, 253, 0.25);
+  backdrop-filter: blur(14px) saturate(180%);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(33, 212, 253, 0.25);
+  transform-origin: top center;
+  opacity: 0;
+  transform: scaleY(0.8) translateY(8px);
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+/* Glow & pulse on open */
+.dropdown-menu.show {
+  opacity: 1;
+  transform: scaleY(1) translateY(0);
+  box-shadow: 0 0 25px rgba(124, 92, 255, 0.3),
+              inset 0 0 10px rgba(33, 212, 253, 0.2);
+  animation: dropdownPulse 1s ease-out, dropdownScan 1.2s ease-out;
+}
+
+/* Dropdown items */
+.dropdown-item {
+  color: rgba(255, 255, 255, 0.9);
+  padding: 10px 18px;
+  transition: all 0.25s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  border-radius: 6px;
+}
+.dropdown-item:hover {
+  background: linear-gradient(90deg, #7c5cff, #21d4fd);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(124, 92, 255, 0.4);
+  transform: translateX(3px);
+}
+
+/* Desktop hover animation */
+@media (min-width: 992px) {
+  .navbar .dropdown:hover > .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+    animation: dropdownReveal 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+               dropdownPulse 1s ease-out,
+               dropdownScan 1.2s ease-out;
+  }
+}
+
+/* Reveal animation */
+@keyframes dropdownReveal {
+  0% {
+    opacity: 0;
+    transform: scaleY(0.6) translateY(-8px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Neon Pulse */
+@keyframes dropdownPulse {
+  0% {
+    box-shadow: 0 0 0px rgba(124, 92, 255, 0),
+                0 0 0px rgba(33, 212, 253, 0);
+  }
+  30% {
+    box-shadow: 0 0 25px rgba(124, 92, 255, 0.8),
+                0 0 40px rgba(33, 212, 253, 0.7);
+  }
+  60% {
+    box-shadow: 0 0 18px rgba(124, 92, 255, 0.5),
+                0 0 28px rgba(33, 212, 253, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(124, 92, 255, 0.3),
+                inset 0 0 10px rgba(33, 212, 253, 0.2);
+  }
+}
+
+/* Holographic Scan-line shimmer */
+@keyframes dropdownScan {
+  0% { background-image: linear-gradient(180deg, rgba(33,212,253,0.25) 0%, transparent 50%, rgba(124,92,255,0.25) 100%); background-size: 100% 400%; background-position: 50% 100%; }
+  50% { background-position: 50% 0%; }
+  100% { background-position: 50% -100%; }
+}
+
+/* Hamburger icon */
+.navbar-toggler {
+  border: none;
+}
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255,255,255,1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+</style>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Mobile Auto-close -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const navbarCollapse = document.getElementById('mainNav');
+  const navbarLinks = navbarCollapse.querySelectorAll('a.nav-link:not(.dropdown-toggle), .dropdown-item, .btn');
+
+  navbarLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if(window.innerWidth < 992){
+        new bootstrap.Collapse(navbarCollapse).hide();
+      }
+    });
+  });
+
+  const dropdownToggles = navbarCollapse.querySelectorAll('.dropdown-toggle');
+  dropdownToggles.forEach(toggle => {
+    toggle.addEventListener('click', function (e) {
+      if(window.innerWidth < 992){
+        e.preventDefault();
+        const dropdownMenu = this.nextElementSibling;
+        dropdownMenu.classList.toggle('show');
+        navbarCollapse.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+          if(menu !== dropdownMenu) menu.classList.remove('show');
+        });
+      }
+    });
+  });
+});
+</script>
+
+
+<!-- Hero -->
+<section class="hero section" style="position:relative;">
+  <div class="container hero-wrap" style="position:relative; z-index:1;">
+    <div>
+      
+      <h1>Exam Security.<br/>Done Right.</h1>
+      <p class="lead">Deter. Detect. Prevent. A complete remote proctoring solution with content protection, image verification, live monitoring and actionable analytics—built to scale globally.</p>
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:16px">
+        <a href="demo-request.html" class="btn" role="button" aria-label="Get a demo">
+          <!-- spark icon -->
+          <svg class="icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#0b1020" d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2 2-6z"/></svg>
+          Get a Demo
+        </a>
+        <a href="#about-purpose" class="btn ghost" role="button">Explore Platform</a>
+      </div>
+    </div>
+<img src="images/robot.png" alt="Advanced AI Robot Working on Laptop" 
+     style="width: 120%; height: 132%; object-fit: cover; position: relative; left: 50px;">
+
+<style>
+    body {
+        background-color: #121212;
+        margin: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Help Bubble (Chatbot style) */
+    .help-bubble {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    .help-bubble-button {
+        background: linear-gradient(135deg, #7c5cff, #21d4fd);
+        border: none;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(33, 212, 253, 0.5);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .help-bubble-button:hover {
+        transform: scale(1.08);
+    }
+
+    /* Menu */
+    .help-bubble-menu {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: #1b1b1b;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        width: 200px;
+        padding: 15px;
+        display: none;
+        flex-direction: column;
+        animation: slideUp 0.3s ease forwards;
+    }
+
+    .help-bubble-menu.active {
+        display: flex;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .help-bubble-menu h4 {
+        color: #fff;
+        margin-bottom: 10px;
+        font-size: 16px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+    }
+
+    .help-bubble-menu a {
+        color: #ccc;
+        text-decoration: none;
+        margin: 5px 0;
+        font-size: 14px;
+        padding: 6px;
+        border-radius: 6px;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .help-bubble-menu a:hover {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    /* Robot Icon */
+    .help-bubble-button svg {
+        width: 32px;
+        height: 32px;
+        display: block;
+    }
+</style>
+</head>
+<body>
+
+<style>
+    body {
+        background-color: #121212;
+        margin: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Help Bubble */
+    .help-bubble {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    .help-bubble-button {
+        background: linear-gradient(135deg, #7c5cff, #21d4fd);
+        border: none;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(33, 212, 253, 0.5);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .help-bubble-button:hover {
+        transform: scale(1.08);
+    }
+
+    /* Menu */
+    .help-bubble-menu {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: #1b1b1b;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        width: 200px;
+        padding: 15px;
+        display: none;
+        flex-direction: column;
+        animation: slideUp 0.3s ease forwards;
+    }
+
+    .help-bubble-menu.active {
+        display: flex;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .help-bubble-menu h4 {
+        color: #fff;
+        margin-bottom: 10px;
+        font-size: 16px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+    }
+
+    .help-bubble-menu a {
+        color: #ccc;
+        text-decoration: none;
+        margin: 5px 0;
+        font-size: 14px;
+        padding: 6px;
+        border-radius: 6px;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .help-bubble-menu a:hover {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    /* Robot Icon */
+    .help-bubble-button svg {
+        width: 32px;
+        height: 32px;
+        display: block;
+    }
+</style>
+</head>
+<body>
+<style>
+    body {
+        background-color: #121212;
+        margin: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Help Bubble */
+    .help-bubble {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    .help-bubble-button {
+        background: linear-gradient(135deg, #7c5cff, #21d4fd);
+        border: none;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(33, 212, 253, 0.5);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .help-bubble-button:hover {
+        transform: scale(1.08);
+    }
+
+    /* Menu */
+    .help-bubble-menu {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: #1b1b1b;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        width: 200px;
+        padding: 15px;
+        display: none;
+        flex-direction: column;
+        animation: slideUp 0.3s ease forwards;
+    }
+
+    .help-bubble-menu.active {
+        display: flex;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .help-bubble-menu h4 {
+        color: #fff;
+        margin-bottom: 10px;
+        font-size: 16px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+    }
+
+    .help-bubble-menu a {
+        color: #ccc;
+        text-decoration: none;
+        margin: 5px 0;
+        font-size: 14px;
+        padding: 6px;
+        border-radius: 6px;
+        transition: background 0.3s ease, color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .help-bubble-menu a:hover {
+        background: #2d2d2d;
+        color: #fff;
+    }
+
+    /* Robot Icon */
+    .help-bubble-button svg {
+        width: 32px;
+        height: 32px;
+        display: block;
+    }
+
+    /* AI Guide Popup */
+    .ai-guide-popup {
+        position: absolute;
+        bottom: 140px;
+        right: 0;
+        width: 260px;
+        background: #1f1f1f;
+        color: white;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+        padding: 15px;
+        display: none;
+        animation: fadeInUp 0.3s ease forwards;
+        font-size: 14px;
+    }
+
+    .ai-guide-popup h4 {
+        margin-top: 0;
+        font-size: 16px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 5px;
+        margin-bottom: 8px;
+    }
+
+    .ai-guide-popup button {
+        margin-top: 10px;
+        padding: 5px 10px;
+        background: #7c5cff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .ai-guide-popup button:hover {
+        background: #5b3cc4;
+    }
+
+    @keyframes fadeInUp {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+</head>
+<body>
+
+<style>
+    body {
+        background-color: #121212;
+        margin: 0;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Help Bubble Wrapper */
+    .help-bubble {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 1100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+    }
+
+    /* Help Bubble Button */
+    .help-bubble-button {
+        background: linear-gradient(135deg, #7c5cff, #21d4fd);
+        border: none;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(33, 212, 253, 0.5);
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .help-bubble-button:hover {
+        transform: scale(1.08);
+    }
+
+    /* Help Menu */
+    .help-bubble-menu {
+        position: absolute;
+        bottom: 70px;
+        right: 0;
+        background: rgba(28, 28, 28, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 14px;
+        box-shadow: 0 6px 20px rgba(124, 92, 255, 0.3);
+        width: 220px;
+        padding: 15px;
+        display: none;
+        flex-direction: column;
+        animation: slideUp 0.3s ease forwards;
+        border: 1px solid rgba(124, 92, 255, 0.2);
+    }
+
+    .help-bubble-menu.active {
+        display: flex;
+    }
+
+    .help-bubble-menu h4 {
+        color: #ffffff;
+        font-size: 16px;
+        margin-bottom: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 6px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .help-bubble-menu a {
+        color: #cccccc;
+        text-decoration: none;
+        margin: 6px 0;
+        font-size: 14px;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+
+    .help-bubble-menu a:hover {
+        background: rgba(124, 92, 255, 0.12);
+        color: #ffffff;
+        transform: translateX(3px);
+    }
+
+    /* AI Guide Popup */
+    .ai-guide-popup {
+        position: absolute;
+        bottom: 140px;
+        right: 0;
+        width: 270px;
+        background: rgba(31, 31, 31, 0.95);
+        backdrop-filter: blur(10px);
+        color: white;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(33, 212, 253, 0.3);
+        padding: 15px;
+        display: none;
+        animation: fadeInUp 0.3s ease forwards;
+        font-size: 14px;
+        line-height: 1.5;
+        border: 1px solid rgba(33, 212, 253, 0.2);
+    }
+
+    .ai-guide-popup h4 {
+        margin-top: 0;
+        font-size: 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding-bottom: 6px;
+        margin-bottom: 10px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .ai-guide-popup p {
+        color: #dddddd;
+        margin: 0;
+    }
+
+    .ai-guide-popup button {
+        margin-top: 12px;
+        padding: 8px 12px;
+        background: linear-gradient(135deg, #7c5cff, #21d4fd);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+    .ai-guide-popup button:hover {
+        background: linear-gradient(135deg, #5b3cc4, #1ca3c7);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(124, 92, 255, 0.3);
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeInUp {
+        from { transform: translateY(10px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+</style>
+</head>
+<body>
+
+<!-- Help Bubble -->
+<div class="help-bubble" id="helpBubble" style="position: fixed; bottom: 100px; right: 20px; z-index: 1000;">
+
+  <style>
+    /* Bot Button Glow Animation */
+    @keyframes botGlow {
+      0% {
+        box-shadow: 0 0 10px 3px rgba(124,92,255,0.8), 0 0 20px 6px rgba(33,212,253,0.6);
+      }
+      50% {
+        box-shadow: 0 0 25px 8px rgba(124,92,255,1), 0 0 45px 12px rgba(33,212,253,0.9);
+      }
+      100% {
+        box-shadow: 0 0 10px 3px rgba(124,92,255,0.8), 0 0 20px 6px rgba(33,212,253,0.6);
+      }
+    }
+
+    /* Bot Button Style */
+    #helpButton {
+      background: linear-gradient(135deg, #7c5cff, #21d4fd);
+      border: none;
+      border-radius: 14px;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      outline: none;
+      animation: botGlow 2s infinite;
+      transition: transform 0.1s ease;
+    }
+
+    #helpButton:active {
+      transform: scale(0.95);
+    }
+
+    /* WhatsApp Button */
+    #whatsappButton {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 1000;
+    }
+
+    #whatsappButton:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+
+    #whatsappButton img {
+      width: 32px;
+      height: 32px;
+    }
+  </style>
+
+  <!-- Main Bot Button -->
+  <button class="help-bubble-button" id="helpButton">
+      <img src="images/botlogo.jpg" alt="Help Logo"
+           style="width: 32px; height: 32px; border-radius: 12px; object-fit: cover;">
+  </button>
+
+  <!-- Help Menu -->
+  <div class="help-bubble-menu" id="helpMenu">
+      <h4>Need Help?</h4>
+      <a href="faq.html">📄 FAQ</a>
+      <a href="voice-ai-continuous.html">💬 Live Assistant</a>
+      <a id="aiGuideBtn">🤖 AI Guide</a>
+  </div>
+
+<!-- 🌐 ProctoVision.AI - Live AI Proctor Chat (Clean Restart Edition) -->
+<div id="aiGuidePopup" style="position:fixed; bottom:25px; right:25px; width:350px; background:#fff; border-radius:20px; box-shadow:0 10px 28px rgba(0,0,0,0.3); padding:20px; font-family:'Inter',Arial,sans-serif; z-index:9999; animation:fadeIn 0.8s ease, slideUp 0.6s ease;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <h4 style="margin:0; color:#111; font-size:18px;">ProctoVision.AI Live Proctor</h4>
+  </div>
+
+  <p style="color:#444; line-height:1.6; font-size:14px; margin:14px 0;">
+    👋 Welcome! I’m your <b>AI Test Proctor</b>.<br><br>
+    ⚙️ Your webcam and mic help ensure test integrity.<br>
+    🚫 Don’t switch tabs — it’s monitored.<br>
+    🧠 Once submitted, you can’t go back.<br><br>
+    Need help? Start a chat below.
+  </p>
+
+  <div style="display:flex; justify-content:space-between; margin-top:14px;">
+    <button id="openChat" style="background:linear-gradient(90deg,#007bff,#00bfff); color:white; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;">💬 Chat with AI</button>
+    <button id="closeAiGuide" style="background:#28a745; color:white; border:none; padding:9px 16px; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;">Got it!</button>
+  </div>
+</div>
+
+<!-- 💬 Real-Time Chat -->
+<div id="aiChatWindow" style="display:none; position:fixed; bottom:25px; right:25px; width:350px; height:460px; background:#f9fafc; border-radius:20px; box-shadow:0 10px 28px rgba(0,0,0,0.3); font-family:'Inter',Arial,sans-serif; z-index:10000; overflow:hidden; flex-direction:column;">
+  <div style="background:linear-gradient(90deg,#007bff,#00bfff); color:white; padding:14px; font-size:16px; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+    <span>💬 ProctoVision.AI</span>
+    <button id="closeChat" style="background:none; border:none; color:white; font-size:22px; cursor:pointer;">×</button>
+  </div>
+
+  <div id="chatMessages" style="padding:14px; height:350px; overflow-y:auto; font-size:14px; display:flex; flex-direction:column;">
+  </div>
+
+  <div style="display:flex; border-top:1px solid #ddd; background:#fff;">
+    <input id="chatInput" type="text" placeholder="Type your question here..." maxlength="250" style="flex:1; border:none; padding:12px; font-size:14px; outline:none;">
+    <button id="sendBtn" style="background:#007bff; color:white; border:none; padding:0 18px; cursor:pointer; font-size:18px;">➤</button>
+  </div>
+
+  <div style="font-size:11px; text-align:center; padding:6px; color:#777;">
+    Powered by <b>ProctoVision.AI</b> • Smart AI Proctor System
+  </div>
+</div>
+
+<!-- ✨ Animations -->
+<style>
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes slideUp { from {transform:translateY(50px);} to {transform:translateY(0);} }
+@keyframes blink { 0%,80%,100% { opacity:1; } 40% { opacity:0.3; } }
+@keyframes slideIn { from {transform:translateY(10px); opacity:0;} to {transform:translateY(0); opacity:1;} }
+.typing { display:inline-block; width:18px; text-align:center; }
+.typing span { display:inline-block; width:5px; height:5px; background:white; border-radius:50%; margin:0 1px; animation:blink 1.4s infinite both; }
+.typing span:nth-child(2){animation-delay:0.2s;} .typing span:nth-child(3){animation-delay:0.4s;}
+</style>
+
+<!-- ⚡ Script -->
+<script>
+const guide = document.getElementById("aiGuidePopup");
+const chat = document.getElementById("aiChatWindow");
+const openChat = document.getElementById("openChat");
+const closeGuide = document.getElementById("closeAiGuide");
+const closeChat = document.getElementById("closeChat");
+const sendBtn = document.getElementById("sendBtn");
+const chatInput = document.getElementById("chatInput");
+const chatMessages = document.getElementById("chatMessages");
+
+openChat.onclick = () => {
+  guide.style.display = "none";
+  chat.style.display = "flex";
+  resetChat();
+};
+closeGuide.onclick = () => guide.style.display = "none";
+closeChat.onclick = () => {
+  chat.style.display = "none";
+  guide.style.display = "block";
+  resetChat(); // Clear when closed
+};
+
+sendBtn.onclick = sendMessage;
+chatInput.addEventListener("keypress", e => { if (e.key === "Enter") sendMessage(); });
+
+// 💬 Functions
+function resetChat() {
+  chatMessages.innerHTML = "";
+  appendBubble("👋 Hi there! I’m your AI proctor. How can I assist you today?", "ai");
+}
+
+function sendMessage() {
+  const msg = chatInput.value.trim();
+  if (!msg) return;
+  appendBubble(msg, "user");
+  chatInput.value = "";
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    appendBubble(getAiResponse(msg), "ai");
+  }, 1100);
+}
+
+function appendBubble(text, sender) {
+  const bubble = document.createElement("div");
+  bubble.style.maxWidth = "85%";
+  bubble.style.marginBottom = "10px";
+  bubble.style.padding = "10px 14px";
+  bubble.style.wordWrap = "break-word";
+  bubble.style.animation = "slideIn 0.3s ease";
+  if (sender === "user") {
+    bubble.style.alignSelf = "flex-end";
+    bubble.style.background = "#e5f1ff";
+    bubble.style.borderRadius = "12px 12px 0 12px";
+    bubble.style.color = "#111";
+  } else {
+    bubble.style.alignSelf = "flex-start";
+    bubble.style.background = "#007bff";
+    bubble.style.color = "white";
+    bubble.style.borderRadius = "12px 12px 12px 0";
+  }
+  bubble.innerText = text;
+  chatMessages.appendChild(bubble);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+let typingDiv;
+function showTyping() {
+  typingDiv = document.createElement("div");
+  typingDiv.className = "aiBubble";
+  typingDiv.style.alignSelf = "flex-start";
+  typingDiv.style.background = "#007bff";
+  typingDiv.style.color = "white";
+  typingDiv.style.borderRadius = "12px 12px 12px 0";
+  typingDiv.style.padding = "10px 14px";
+  typingDiv.style.marginBottom = "10px";
+  typingDiv.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  chatMessages.appendChild(typingDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+function hideTyping(){ if(typingDiv) typingDiv.remove(); }
+
+function getAiResponse(msg) {
+  msg = msg.toLowerCase();
+
+  if (msg.includes("camera")) return "📷 Please keep your camera active during the test.";
+  if (msg.includes("mic")) return "🎤 The microphone helps ensure fairness and detect background noise.";
+  if (msg.includes("tab") || msg.includes("switch")) return "⚠️ Tab switching is monitored. Please stay in the test window.";
+  if (msg.includes("issue") || msg.includes("problem")) return "🛠️ Please describe your issue — I’ll assist you immediately.";
+  if (msg.includes("hello") || msg.includes("hi")) return "👋 Hello! Ready to begin your secure exam session?";
+  if (msg.includes("network")) return "🌐 No worries — your test auto-syncs if your network drops temporarily.";
+  if (msg.includes("start")) return "✅ Check your camera and mic, then click ‘Start Test’.";
+  if (msg.includes("cheat")) return "🚫 Cheating is tracked in real-time via AI analysis.";
+  if (msg.includes("how") && msg.includes("work")) return "🤖 ProctoVision.AI uses AI to monitor camera, mic, and browser activities during your test.";
+  if (msg.includes("support")) return "👨‍💻 You can contact human support using the ‘Contact Invigilator’ button.";
+  if (msg.includes("record")) return "🧠 Only essential data (video/audio) is recorded securely for verification.";
+  if (msg.includes("rules")) return "📘 Rules: Stay visible, avoid noise, and don’t use any external devices or notes.";
+  if (msg.includes("privacy")) return "🔒 Your data is encrypted and only used for maintaining test integrity.";
+  if (msg.includes("end") || msg.includes("submit")) return "✅ Once done, click ‘Submit Test’ — your session will close automatically.";
+  if (msg.includes("platform")) return "🖥️ ProctoVision.AI is a secure web-based AI proctoring platform ensuring fair online exams.";
+
+  return "🤖 Thank you for your question. ProctoVision.AI ensures a secure, monitored, and fair exam environment.";
+}
+</script>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/qr/HGDOPAKBFNDHE1" target="_blank" id="whatsappButton">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+  </a>
+
+</div>
+
+
+<!-- Sound -->
+<audio id="help-sound" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg" preload="auto"></audio>
+
+<script>
+    const helpBubble = document.getElementById('helpBubble');
+    const helpMenu = document.getElementById('helpMenu');
+    const helpSound = document.getElementById('help-sound');
+    const helpButton = document.getElementById('helpButton');
+    const aiGuideBtn = document.getElementById('aiGuideBtn');
+    const aiGuidePopup = document.getElementById('aiGuidePopup');
+    const closeAiGuide = document.getElementById('closeAiGuide');
+    let soundAllowed = false;
+
+    function toggleHelpMenu() {
+        helpMenu.classList.toggle("active");
+    }
+
+    function enableHelpBubble() {
+        soundAllowed = true;
+        document.removeEventListener('click', enableHelpBubble);
+
+        setTimeout(() => {
+            helpBubble.style.opacity = '1';
+            helpBubble.style.pointerEvents = 'auto';
+            if (soundAllowed) {
+                helpSound.play().catch(e => console.log('Sound play prevented:', e));
+            }
+        }, 4000);
+    }
+
+    helpButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleHelpMenu();
+    });
+
+    aiGuideBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        aiGuidePopup.style.display = 'block';
+    });
+
+    closeAiGuide.addEventListener('click', () => {
+        aiGuidePopup.style.display = 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!helpMenu.contains(e.target) && !helpButton.contains(e.target)) {
+            helpMenu.classList.remove("active");
+        }
+        if (!aiGuidePopup.contains(e.target) && !aiGuideBtn.contains(e.target)) {
+            aiGuidePopup.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('click', enableHelpBubble);
+</script>
+
+</section>
+
+
+<!-- Highlights Section -->
+<section class="section highlights">
+  <div class="container grid grid-4">
+    <div class="card icon-tile" tabindex="0">
+      <svg class="icon-large" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#a6ffcb" d="M12 2l9 4v6c0 6-4.5 10.5-9 12-4.5-1.5-9-6-9-12V6l9-4z"/>
+        <path fill="#101733" d="M12 8l5 2-5 2-5-2 5-2z"/>
+      </svg>
+      <h3>Image Verification</h3>
+      <p>Advanced facial detection and automated checks before entry.</p>
+    </div>
+    <div class="card icon-tile" tabindex="0">
+      <svg class="icon-large" viewBox="0 0 24 24">
+        <path fill="#21d4fd" d="M3 5h18v14H3z"/>
+        <path fill="#0b1020" d="M7 9h10v2H7zM7 13h6v2H7z"/>
+      </svg>
+      <h3>Content Protection</h3>
+      <p>Restrict copy, print, download, extensions and screen capture.</p>
+    </div>
+    <div class="card icon-tile" tabindex="0">
+      <svg class="icon-large" viewBox="0 0 24 24">
+        <path fill="#ffd166" d="M5 3h14l2 4H3l2-4z"/>
+        <rect x="3" y="7" width="18" height="14" rx="2" fill="#7c5cff"/>
+      </svg>
+      <h3>Live Monitoring</h3>
+      <p>Immediate interventions and on-demand live reports.</p>
+    </div>
+    <div class="card icon-tile" tabindex="0">
+      <svg class="icon-large" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" fill="#7c5cff"/>
+        <path d="M7 13l3 3 7-7" stroke="#0b1020" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3>Professional Review</h3>
+      <p>Expert analysis with same-day to 3-day turnaround.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 🌐 Modern Corporate Section with Parallax Effect & AJAX-style Reveal -->
+<section id="about-purpose" style="
+  position: relative;
+  padding: 140px 8%;
+  background: linear-gradient(180deg, #f9fbff 0%, #eef4ff 100%);
+  font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+">
+
+  <!-- 🌈 Parallax Background Layers -->
+  <div class="parallax-layer" style="
+    background: radial-gradient(circle at 30% 30%, rgba(0,102,255,0.12), transparent 70%);
+    top: 0; left: 0; width: 100%; height: 120%; z-index: 0;
+  "></div>
+
+  <div class="parallax-layer" style="
+    background: radial-gradient(circle at 80% 70%, rgba(0,255,204,0.1), transparent 70%);
+    top: 0; left: 0; width: 100%; height: 120%; z-index: 0;
+  "></div>
+
+  <div style="max-width: 1300px; margin: 0 auto; position: relative; z-index: 2;">
+
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 80px;" class="fade-in">
+      <h2 style="
+        font-size: 2.8rem;
+        font-weight: 700;
+        color: #0b1020;
+        margin-bottom: 16px;
+        letter-spacing: -0.5px;
+      ">
+        Our Purpose & Story
+      </h2>
+      <p style="
+        font-size: 1.15rem;
+        color: #555;
+        max-width: 780px;
+        margin: 0 auto;
+        line-height: 1.8;
+      ">
+        We’re redefining remote examinations through AI innovation — combining security,
+        scalability, and human-centered design for digital assessments worldwide. 🌍✨
+      </p>
+    </div>
+
+    <!-- Content Grid -->
+    <div style="
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 70px;
+      align-items: center;
+    ">
+
+      <!-- Left Cards -->
+      <div>
+        <div class="card-fade">
+          <h3 style="color:#0044ff; font-size:1.4rem; margin-bottom:8px;">🚀 Innovation</h3>
+          <p style="color:#333; line-height:1.7;">
+            Harnessing AI-driven insights to continuously evolve the digital exam experience.
+          </p>
+        </div>
+
+        <div class="card-fade" style="animation-delay: 0.15s;">
+          <h3 style="color:#0044ff; font-size:1.4rem; margin-bottom:8px;">🌐 Scalability</h3>
+          <p style="color:#333; line-height:1.7;">
+            Supporting institutions of any size with cloud-native infrastructure and analytics.
+          </p>
+        </div>
+
+        <div class="card-fade" style="animation-delay: 0.3s;">
+          <h3 style="color:#0044ff; font-size:1.4rem; margin-bottom:8px;">🛡️ Integrity</h3>
+          <p style="color:#333; line-height:1.7;">
+            Ensuring fair evaluations with intelligent identity verification and behavior monitoring.
+          </p>
+        </div>
+      </div>
+
+      <!-- Right About Section -->
+      <div class="fade-in" style="position:relative;">
+        <div style="position:relative;">
+          <img src="images/exam.jpg" alt="AI Team Collaboration" 
+               style="width: 100%; border-radius: 18px; box-shadow: 0 10px 40px rgba(0,0,0,0.12);">
+          <div style="
+            position:absolute; top:0; left:0; width:100%; height:100%;
+            background:linear-gradient(to bottom, rgba(0,0,0,0.15), transparent);
+            border-radius:18px;">
+          </div>
+        </div>
+
+        <h3 style="font-size:1.6rem; color:#0b1020; margin:20px 0 10px;">Who We Are 👥</h3>
+        <p style="font-size:1.05rem; color:#444; line-height:1.8; margin-bottom: 24px;">
+          We are a team of innovators dedicated to making exams smarter and more secure.
+          Our AI proctoring platform integrates real-time analytics, facial recognition,
+          and privacy-first controls to power the next generation of assessments.
+        </p>
+
+        <a href="javascript:void(0);" id="learnMoreBtn" aria-label="Learn more about our purpose and story" style="
+          background: #0044ff;
+          color: #fff;
+          padding: 14px 36px;
+          border-radius: 10px;
+          text-decoration: none;
+          font-weight: 600;
+          display: inline-block;
+          transition: all 0.3s ease;
+        "
+        onmouseover="this.style.background='#002db3';"
+        onmouseout="this.style.background='#0044ff';">
+          Learn More →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- AJAX-style Expandable Content -->
+    <div id="ajaxContent" style="
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.8s ease;
+      margin-top: 0;
+    ">
+      <div style="margin-top: 60px; background: #fff; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); padding: 50px;">
+        <h3 style="font-size:1.8rem; color:#0b1020; margin-bottom: 20px;">Our Vision for the Future 🌟</h3>
+        <p style="font-size:1.05rem; color:#444; line-height:1.8;">
+          We believe the future of digital assessments lies at the intersection of ethics and innovation.
+          Our solutions combine cutting-edge AI with transparency and privacy, ensuring technology serves both institutions and students fairly.
+        </p>
+        <p style="font-size:1.05rem; color:#444; line-height:1.8;">
+          With adaptive proctoring models, zero-latency data pipelines, and accessibility-first design,
+          we aim to empower a smarter, more inclusive academic world.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ✨ Styles & Animations -->
+<style>
+.fade-in, .card-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.fade-in.appear, .card-fade.appear {
+  opacity: 1;
+  transform: translateY(0);
+}
+.parallax-layer {
+  position: absolute;
+  will-change: transform;
+  pointer-events: none;
+  transition: transform 0.1s linear;
+}
+@media (max-width: 768px) {
+  #about-purpose { padding: 80px 6%; }
+  #about-purpose h2 { font-size: 2rem; }
+}
+</style>
+
+<!-- 🌀 Scroll & AJAX-like Expand JS -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const faders = document.querySelectorAll(".fade-in, .card-fade");
+  const layers = document.querySelectorAll(".parallax-layer");
+  const appearOptions = { threshold: 0.15 };
+
+  const appearOnScroll = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("appear");
+      observer.unobserve(entry.target);
+    });
+  }, appearOptions);
+
+  faders.forEach(fader => appearOnScroll.observe(fader));
+
+  // 🌈 Parallax Motion
+  window.addEventListener("scroll", () => {
+    let scrollY = window.scrollY;
+    layers.forEach((layer, i) => {
+      let speed = (i + 1) * 15;
+      layer.style.transform = `translateY(${scrollY / speed}px)`;
+    });
+  });
+
+  // 🧩 AJAX-style reveal
+  const learnMoreBtn = document.getElementById("learnMoreBtn");
+  const ajaxContent = document.getElementById("ajaxContent");
+  let expanded = false;
+
+  learnMoreBtn.addEventListener("click", () => {
+    expanded = !expanded;
+    if (expanded) {
+      ajaxContent.style.maxHeight = ajaxContent.scrollHeight + "px";
+      ajaxContent.style.opacity = "1";
+      ajaxContent.style.marginTop = "40px";
+      learnMoreBtn.innerHTML = "Show Less ↑";
+    } else {
+      ajaxContent.style.maxHeight = "0";
+      ajaxContent.style.opacity = "0";
+      ajaxContent.style.marginTop = "0";
+      learnMoreBtn.innerHTML = "Learn More →";
+    }
+  });
+});
+</script>
+
+<style>
+/* Container grid */
+.container.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+/* Card styles */
+.card {
+  position: relative;
+  background: #0b1020;
+  border-radius: 16px;
+  padding: 32px 20px 28px 20px;
+  color: #e9e7ff;
+  box-shadow: 0 6px 18px rgba(124, 92, 255, 0.15);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.card:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #7c5cff, 0 8px 24px rgba(124, 92, 255, 0.3);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 36px rgba(124, 92, 255, 0.3);
+}
+
+/* Shower glow effect */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -120px;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 0%, rgba(124, 92, 255, 0.25) 50%, transparent 100%);
+  transform: skewX(-25deg);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 2;
+}
+
+.card:active::after {
+  opacity: 1;
+  animation: shower-glow 1s ease forwards;
+}
+
+@keyframes shower-glow {
+  0% { right: -120px; opacity: 1; }
+  50% { right: 100%; opacity: 1; }
+  100% { right: 100%; opacity: 0; }
+}
+
+/* Icon styles */
+.card .icon-large {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+}
+
+/* Heading and paragraph spacing */
+.card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 12px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #d0d0ff;
+}
+</style>
+<section style="
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+">
+
+
+
+  <!-- 🎥 Background Video -->
+  <video autoplay muted loop playsinline
+    style="
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 1;
+      filter: brightness(0.55) contrast(1.15) saturate(1.25);
+      transition: all 0.4s ease;
+    ">
+    <source src='Videos/procto.mp4' type='video/mp4'>
+  </video>
+
+  <!-- 🌈 Gradient Overlay -->
+  <div style="
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(
+      180deg,
+      rgba(0,0,0,0.4) 0%,
+      rgba(0,0,0,0.65) 100%
+    );
+    z-index: 1;
+  "></div>
+
+  <!-- 🪩 Hero Content -->
+  <div class="hero-content" style="
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 900px;
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeUp 1.6s ease forwards;
+  ">
+    <h1 style="
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      line-height: 1.2;
+      background: linear-gradient(90deg, #00bfff, #4da6ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+      animation: fadeIn 2s ease forwards;
+    ">
+      Empowering a Smarter, Connected Future
+    </h1>
+    <p style="
+      font-size: 1.25rem;
+      color: #f0f0f0;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeIn 2.3s ease 0.5s forwards;
+    ">
+      Transforming ideas into intelligent digital ecosystems — driven by AI, automation, and cloud innovation.
+    </p>
+
+    <div style="margin-top: 50px; opacity: 0; animation: fadeIn 2.6s ease 0.9s forwards;">
+      <a href='#' style="
+        background: linear-gradient(90deg, #007bff, #00d4ff);
+        color: white;
+        padding: 14px 36px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+        display: inline-block;
+      "
+      onmouseover="this.style.background='linear-gradient(90deg, #00d4ff, #007bff)';"
+      onmouseout="this.style.background='linear-gradient(90deg, #007bff, #00d4ff)';">
+        Explore Solutions
+      </a>
+    </div>
+  </div>
+
+  <!-- ✨ Animations -->
+  <style>
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+</section>
+
+
+<style>
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(20, 25, 50, 0.75);
+  border-radius: 20px;
+  padding: 32px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 8px 28px rgba(124, 92, 255, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.hover-glow:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(124, 92, 255, 0.35);
+}
+
+/* Stretch cards to same height */
+.row.d-flex > .col-md-6.d-flex > .glass-card {
+  flex: 1 1 auto;
+}
+
+/* Tags */
+.tag {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+}
+
+.tag.mission {
+  background: linear-gradient(90deg, #21d4fd, #7c5cff);
+  color: #fff;
+}
+
+.tag.vision {
+  background: linear-gradient(90deg, #ffd166, #f66d6d);
+  color: #101733;
+}
+
+/* Headings & text */
+h3 {
+  font-size: 1.6rem;
+  margin-bottom: 16px;
+}
+
+p.lead {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #d0d0ff;
+  margin-bottom: 20px;
+}
+
+/* List items */
+ul.list {
+  padding-left: 0;
+  list-style: none;
+}
+
+ul.list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
+}
+
+ul.list li svg {
+  margin-right: 10px;
+}
+</style>
+
+
+<style>
+.fade-in, .card-fade {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.fade-in.appear, .card-fade.appear {
+  opacity: 1;
+  transform: translateY(0);
+}
+.card-fade {
+  background: #fff;
+  padding: 28px 24px;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.05);
+  margin-bottom: 28px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-fade:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 102, 255, 0.15);
+}
+</style>
+
+
+<!-- Premium AI Proctoring Tools with Videos -->
+<section id="proctoring" style="position:relative; background:#0b1020; color:#e9e7ff; padding:100px 0; overflow:hidden;">
+
+  <!-- Floating background shapes -->
+  <div style="position:absolute; top:-100px; left:-50px; width:500px; height:500px; background:rgba(124,92,255,0.1); border-radius:50%; filter:blur(120px); animation:float1 15s ease-in-out infinite alternate;"></div>
+  <div style="position:absolute; bottom:-80px; right:-60px; width:400px; height:400px; background:rgba(33,212,253,0.1); border-radius:50%; filter:blur(100px); animation:float2 18s ease-in-out infinite alternate;"></div>
+
+  <div class="container" style="position:relative; z-index:2; text-align:center;">
+    <h2 style="font-size:2.5rem; font-weight:700; margin-bottom:4rem;">AI Proctoring Tools</h2>
+
+    <div class="tools-wrapper" style="display:flex; justify-content:center; flex-wrap:wrap; gap:40px;">
+
+      <!-- Tool 1: Eye Tracking -->
+      <div class="tool-circle" style="--color1:#7c5cff; --color2:#ff6bff;">
+        <video autoplay muted loop playsinline class="tool-video">
+          <source src="procto.mp4" type="video/mp4">
+        </video>
+        <span>Eye Tracking</span>
+      </div>
+
+      <!-- Tool 2: Voice Analysis -->
+      <div class="tool-circle" style="--color1:#00d4ff; --color2:#00ffa6;">
+        <video autoplay muted loop playsinline class="tool-video">
+          <source src="videos/voice_analysis.mp4" type="video/mp4">
+        </video>
+        <span>Voice Analysis</span>
+      </div>
+
+      <!-- Tool 3: Browser Security -->
+      <div class="tool-circle" style="--color1:#00ffb6; --color2:#00d4ff;">
+        <video autoplay muted loop playsinline class="tool-video">
+          <source src="videos/browser_security.mp4" type="video/mp4">
+        </video>
+        <span>Browser Security</span>
+      </div>
+
+      <!-- Tool 4: Auto Alerts -->
+      <div class="tool-circle" style="--color1:#ffd166; --color2:#ff6b6b;">
+        <video autoplay muted loop playsinline class="tool-video">
+          <source src="videos/auto_alerts.mp4" type="video/mp4">
+        </video>
+        <span>Auto Alerts</span>
+      </div>
+
+      <!-- Tool 5: Activity Logs -->
+      <div class="tool-circle" style="--color1:#7c5cff; --color2:#21d4fd;">
+        <video autoplay muted loop playsinline class="tool-video">
+          <source src="videos/activity_logs.mp4" type="video/mp4">
+        </video>
+        <span>Activity Logs</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+/* Tool Circle Style */
+.tool-circle {
+  position: relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  background: linear-gradient(135deg, var(--color1), var(--color2));
+  overflow:hidden;
+  text-align:center;
+  color:#fff;
+  box-shadow: 0 10px 30px rgba(124,92,255,0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tool-circle:hover {
+  transform: translateY(-10px) scale(1.1);
+  box-shadow: 0 25px 50px rgba(124,92,255,0.5);
+}
+
+.tool-circle span {
+  font-size:0.95rem;
+  font-weight:500;
+  margin-top:5px;
+  z-index:2;
+  position:relative;
+}
+
+/* Video inside the circle */
+.tool-video {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  filter:brightness(0.6);
+  z-index:1;
+}
+
+/* Floating background animations */
+@keyframes float1 {
+  0% { transform: translateY(0) translateX(0);}
+  50% { transform: translateY(20px) translateX(10px);}
+  100% { transform: translateY(0) translateX(0);}
+}
+
+@keyframes float2 {
+  0% { transform: translateY(0) translateX(0);}
+  50% { transform: translateY(-20px) translateX(-10px);}
+  100% { transform: translateY(0) translateX(0);}
+}
+
+/* Responsive */
+@media (max-width:992px) {
+  .tools-wrapper { justify-content:center; gap:30px;}
+}
+@media (max-width:576px) {
+  .tool-circle { width:120px; height:120px;}
+}
+</style>
+
+   <!-- 🌐 TCS-Style AI Testimonials + Navigation + Subtle Dark Fade -->
+<section id="testimonials"
+  style="position:relative;overflow:hidden;padding:100px 0;
+         font-family:'Inter',sans-serif;background:#ffffff;">
+
+  <!-- 🌈 Subtle AI Glow -->
+  <div class="ai-bg"></div>
+
+  <div class="container" style="max-width:1100px;margin:auto;position:relative;z-index:2;text-align:center;">
+
+    <!-- 🏢 Heading -->
+    <header class="main-heading fade-in-center">
+      <h1>Empowering Education Through AI</h1>
+      <div class="underline"></div>
+      <p>
+        Our AI-powered solutions are transforming how institutions conduct exams —  
+        with transparency, scalability, and trust.
+      </p>
+    </header>
+
+    <!-- 💬 Testimonials Carousel with Arrows -->
+    <div class="carousel-wrapper">
+      <button class="arrow left" aria-label="Scroll Left">❮</button>
+      <div class="testimonial-carousel">
+        
+        <div class="testimonial-card fade-in">
+          <div class="profile"><img src="https://randomuser.me/api/portraits/women/44.jpg"></div>
+          <h3>Sarah M.</h3>
+          <p class="role">Computer Science Graduate</p>
+          <p class="quote">“AI proctoring ensured fairness and transparency — a flawless experience.”</p>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="profile"><img src="https://randomuser.me/api/portraits/men/36.jpg"></div>
+          <h3>Dr. Ajay Rao</h3>
+          <p class="role">Dean of Examinations</p>
+          <p class="quote">“We managed 10,000+ remote exams seamlessly — it redefined our assessment process.”</p>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="profile"><img src="https://randomuser.me/api/portraits/women/65.jpg"></div>
+          <h3>Emily Chen</h3>
+          <p class="role">HR Director, Global Training</p>
+          <p class="quote">“AI made our certification exams accessible globally — truly transformative.”</p>
+        </div>
+
+        <div class="testimonial-card fade-in">
+          <div class="profile"><img src="https://randomuser.me/api/portraits/men/19.jpg"></div>
+          <h3>Prof. Liam Carter</h3>
+          <p class="role">EdTech Innovator</p>
+          <p class="quote">“A perfect balance of innovation, integrity, and experience.”</p>
+        </div>
+
+      </div>
+      <button class="arrow right" aria-label="Scroll Right">❯</button>
+    </div>
+
+  </div>
+</section>
+
+<style>
+:root {
+  --text-primary:#111;
+  --card-bg:#121212;
+  --card-gradient:linear-gradient(135deg,#1a1a1a 0%,#101318 100%);
+  --shadow:rgba(0,0,0,0.35);
+  --accent:#0078ff;
+}
+
+/* 🌈 Background Glow */
+.ai-bg{
+  position:absolute;inset:0;z-index:0;
+  background:radial-gradient(circle at 15% 25%,rgba(0,120,255,0.15),transparent 70%),
+             radial-gradient(circle at 85% 75%,rgba(140,92,255,0.15),transparent 70%);
+  filter:blur(90px);
+  animation:aiMove 12s ease-in-out infinite alternate;
+}
+@keyframes aiMove{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(25px,-20px);}
+}
+
+/* 🏢 Heading */
+.main-heading{text-align:center;margin-bottom:60px;}
+.main-heading h1{
+  font-size:2.6rem;font-weight:800;color:var(--text-primary);margin-bottom:14px;
+}
+.main-heading .underline{
+  width:70px;height:4px;background:var(--accent);
+  margin:0 auto 18px;border-radius:2px;
+}
+.main-heading p{
+  font-size:1.05rem;color:#444;max-width:700px;margin:0 auto;line-height:1.6;
+}
+
+/* 💬 Testimonials Carousel */
+.carousel-wrapper{
+  position:relative;
+  margin-bottom:80px;
+  overflow:hidden;
+}
+.testimonial-carousel{
+  display:flex;gap:26px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+}
+.testimonial-carousel::-webkit-scrollbar{display:none;}
+
+.testimonial-card{
+  flex:0 0 300px;
+  scroll-snap-align:center;
+  background:var(--card-gradient);
+  border-radius:18px;
+  box-shadow:0 8px 24px var(--shadow);
+  padding:30px 24px;
+  opacity:0;
+  transform:translateY(30px);
+  transition:all .6s ease;
+  color:#fff;
+}
+.testimonial-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 16px 40px rgba(0,120,255,0.4);
+}
+.profile img{
+  width:70px;height:70px;border-radius:50%;
+  margin-bottom:14px;border:2px solid rgba(0,120,255,0.6);
+  object-fit:cover;
+}
+.testimonial-card h3{font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+.role{font-size:0.9rem;color:#ccc;margin-bottom:10px;}
+.quote{font-style:italic;font-size:0.95rem;line-height:1.5;color:#e8e8e8;}
+
+/* ⬅️➡️ Arrows */
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(255,255,255,0.9);
+  color:#0078ff;
+  border:none;
+  font-size:1.8rem;
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+  cursor:pointer;
+  transition:all .3s ease;
+  z-index:3;
+}
+.arrow:hover{
+  background:#0078ff;
+  color:#fff;
+  transform:translateY(-50%) scale(1.1);
+}
+.arrow.left{left:0;}
+.arrow.right{right:0;}
+
+/* ✨ Fade Animations */
+.fade-in.show{opacity:1;transform:translateY(0);transition:all 1s ease;}
+.fade-in-center{opacity:0;transform:scale(0.96);transition:all 1s ease;}
+.fade-in-center.show{opacity:1;transform:scale(1);}
+</style>
+
+<script>
+// 🎬 Fade-in on scroll
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show');});
+},{threshold:0.2});
+document.querySelectorAll('.fade-in,.fade-in-center').forEach(el=>obs.observe(el));
+
+// 🌈 Parallax Glow
+const bg=document.querySelector('.ai-bg');
+document.addEventListener('mousemove',e=>{
+  const x=(e.clientX/window.innerWidth-0.5)*40;
+  const y=(e.clientY/window.innerHeight-0.5)*40;
+  bg.style.transform=`translate(${x}px,${y}px)`;
+});
+
+// ♻️ Auto-scroll
+const carousel=document.querySelector('.testimonial-carousel');
+let auto=true;
+function loop(){
+  if(auto)carousel.scrollLeft+=0.6;
+  if(carousel.scrollLeft+carousel.clientWidth>=carousel.scrollWidth)carousel.scrollLeft=0;
+  requestAnimationFrame(loop);
+}
+loop();
+carousel.addEventListener('mouseenter',()=>auto=false);
+carousel.addEventListener('mouseleave',()=>auto=true);
+
+// ⬅️➡️ Arrow Controls
+document.querySelector('.arrow.left').addEventListener('click',()=>{
+  carousel.scrollBy({left:-320,behavior:'smooth'});
+});
+document.querySelector('.arrow.right').addEventListener('click',()=>{
+  carousel.scrollBy({left:320,behavior:'smooth'});
+});
+</script>
+
+
+<!-- Demo / Preview Section -->
+<section id="demo" class="section" style="position: relative; background: #0b1020; color: #e9e7ff; padding: 100px 0;">
+  <div class="container">
+    <div class="row g-4 d-flex align-items-center">
+      
+      <!-- Left Text Content -->
+      <div class="col-md-6 d-flex">
+        <div class="glass-card hover-glow flex-fill">
+          <h2 style="font-size:2rem;font-weight:800;margin-bottom:10px;">
+            Try the AI-Proctored Test Experience
+          </h2>
+          <p class="lead" style="margin-bottom:18px;">
+            Watch a quick demo of real AI proctoring—ID checks, multi-stream monitoring, gaze & device detection—
+            then launch a hands-on sandbox without logging in.
+          </p>
+
+          <!-- Buttons -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="/demo-request.html" class="btn btn-primary" style="padding:12px 18px;border-radius:12px;background:#7c5cff;color:#fff;text-decoration:none;font-weight:700;">
+              🚀 Try a Demo
+            </a>
+            <a href="/login.html" class="btn" style="padding:12px 18px;border-radius:12px;background:transparent;border:1px solid rgba(233,231,255,.25);color:#e9e7ff;text-decoration:none;">
+              🔐 Log In
+            </a>
+          </div>
+
+          <!-- Mini feature bullets -->
+          <ul class="list" role="list" style="margin-top:18px;">
+            <li>
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4ade80" d="M7 13l3 3 7-7"/></svg>
+              Live webcam + screen + mic capture
+            </li>
+            <li>
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4ade80" d="M7 13l3 3 7-7"/></svg>
+              Face/gaze/anomaly detection with audit trail
+            </li>
+            <li>
+              <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4ade80" d="M7 13l3 3 7-7"/></svg>
+              Secure browser & copy/VM/devices enforcement
+            </li>
+          </ul>
+        </div>
+      </div>
+
+<!-- Right Video Card -->
+<div class="col-md-6 d-flex">
+  <div class="glass-card hover-glow flex-fill" style="padding:0; overflow:hidden; position:relative;">
+    
+    <!-- Responsive Video Box -->
+    <div style="position:relative; padding-top:56.25%; width:100%;">
+      <video id="demoVideo" loop playsinline controls
+             style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;">
+        <source src="videos/ProctoVisionMP4.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <!-- Start Demo Button Overlay -->
+      <button id="playDemoBtn"
+              style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+                     padding:12px 20px; font-size:1rem; border:none; border-radius:8px;
+                     background:linear-gradient(90deg,#21d4fd,#7c5cff); color:#fff; cursor:pointer;">
+        ▶ Start Demo
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const video = document.getElementById('demoVideo');
+  const playBtn = document.getElementById('playDemoBtn');
+
+  // Play video with sound on user click
+  playBtn.addEventListener('click', () => {
+    video.currentTime = 0;
+    video.muted = false;
+    video.play();
+    playBtn.style.display = 'none';
+  });
+
+  // Intersection Observer: pause video when out of view, show button again
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        video.pause();
+        playBtn.style.display = 'block';
+      }
+    });
+  }, { threshold: 0.5 });
+
+  observer.observe(video);
+</script>
+
+
+
+
+    </div>
+  </div>
+</section>
+<!-- Trust & Security Section -->
+<section id="trust" class="section" style="position: relative; background: #0b1020; color: #e9e7ff; padding: 100px 0;">
+  <div class="container">
+    <h2 class="text-center" style="font-size: 2.4rem; font-weight: 800; margin-bottom: 16px;">
+      🔒 Trust & Security
+    </h2>
+    <p class="text-center lead" style="max-width: 720px; margin: 0 auto 60px;">
+      We weave trust into every pixel — from your first click to your final score.
+    </p>
+
+    <!-- Centered Timeline -->
+    <div class="security-ribbon">
+      <div class="security-item left">
+        <div class="content">
+          <img src="https://cdn-icons-png.flaticon.com/512/3064/3064197.png" alt="Encryption" class="icon">
+          <h4>End-to-End Encryption</h4>
+          <p>Military-grade encryption shields every bit of your data in motion and at rest.</p>
+        </div>
+        <span class="node"></span>
+      </div>
+
+      <div class="security-item right">
+        <span class="node"></span>
+        <div class="content">
+          <img src="https://cdn-icons-png.flaticon.com/512/943/943579.png" alt="GDPR" class="icon">
+          <h4>GDPR Compliance</h4>
+          <p>Global privacy laws? We comply. Your rights are protected across borders.</p>
+        </div>
+      </div>
+
+      <div class="security-item left">
+        <div class="content">
+          <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png" alt="Data Safety" class="icon">
+          <h4>Data Safety First</h4>
+          <p>We keep only what’s necessary, delete after use, and never sell your data.</p>
+        </div>
+        <span class="node"></span>
+      </div>
+    </div>
+
+  
+
+</section>
+
+<style>
+/* Centered Vertical Timeline */
+.security-ribbon {
+  position: relative;
+  margin: 0 auto;
+  padding: 0 20px;
+  max-width: 800px;
+}
+
+.security-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 60px;
+}
+
+.security-item.left {
+  justify-content: flex-end;
+}
+
+.security-item.right {
+  justify-content: flex-start;
+}
+
+.security-item .content {
+  background: rgba(20, 25, 50, 0.75);
+  padding: 20px;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 8px 28px rgba(124, 92, 255, 0.25);
+  max-width: 300px;
+  text-align: center;
+}
+
+.security-item .icon {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 8px rgba(124, 92, 255, 0.5));
+}
+
+.security-item h4 {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.security-item p {
+  color: #d0d0ff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Vertical line in the center */
+.security-ribbon::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(124, 92, 255, 0.4), rgba(33, 212, 253, 0.4));
+  transform: translateX(-50%);
+}
+
+.node {
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(90deg, #21d4fd, #7c5cff);
+  border-radius: 50%;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 15px rgba(124, 92, 255, 0.8);
+}
+</style>
+
+    <!-- Who it's for -->
+    <section class="section">
+      <div class="container">
+        <h2>Best Suited For</h2>
+        <div class="grid grid-3" style="margin-top:18px">
+          <div class="card" style="padding:22px">
+            <svg width="48" height="48" viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="#21d4fd" d="M12 2l9 5-9 5-9-5 9-5z" />
+              <path fill="#7c5cff" d="M3 12l9 5 9-5v5l-9 5-9-5v-5z" />
+            </svg>
+            <h3>Universities</h3>
+            <p class="muted">A superior exam experience that promotes excellence and integrity across programs.</p>
+          </div>
+          <div class="card" style="padding:22px">
+            <svg width="48" height="48" viewBox="0 0 24 24">
+              <rect x="2" y="4" width="20" height="14" rx="3" fill="#a6ffcb" />
+              <path d="M6 9h12v2H6zM6 13h8v2H6z" fill="#0b1020" />
+            </svg>
+            <h3>Assessment Providers</h3>
+            <p class="muted">Anytime, anywhere tests with cognitive proctoring that reduces false positives.</p>
+          </div>
+          <div class="card" style="padding:22px">
+            <svg width="48" height="48" viewBox="0 0 24 24">
+              <path d="M4 6h16v12H4z" fill="#ffd166" />
+              <path d="M7 9h10v2H7zM7 13h6v2H7z" fill="#0b1020" />
+            </svg>
+            <h3>E-Learning Programs</h3>
+            <p class="muted">Cut test-center costs; integrate seamlessly or use our secure test engine.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+ <!-- 🌐 Full Background Request Demo Section (High-Tech Clean Style) -->
+<section style="
+  position:relative;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  font-family:'Inter',sans-serif;
+  color:#fff;
+  overflow:hidden;
+">
+
+  <!-- Full Background Image -->
+  <div style="
+    position:absolute;
+    top:0; left:0; width:100%; height:100%;
+    background:url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+    z-index:1;
+  "></div>
+
+  <!-- Dark gradient overlay for text visibility -->
+  <div style="
+    position:absolute;
+    top:0; left:0; width:100%; height:100%;
+    background:linear-gradient(180deg,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.75) 100%);
+    z-index:2;
+  "></div>
+
+  <!-- Content -->
+  <div style="position:relative; z-index:3; max-width:900px; padding:20px;">
+    <h1 style="font-size:3rem; font-weight:800; margin-bottom:20px;">
+      Experience the Future of AI-Powered Exams
+    </h1>
+    <p style="font-size:1.2rem; color:#d6d6ff; margin-bottom:50px; line-height:1.6; max-width:700px; margin:auto;">
+      Join leading universities and enterprises adopting AI-driven proctoring for secure, scalable, and effortless assessments.
+    </p>
+
+    <!-- Request Demo Button -->
+    <button onclick="openDemoForm()" style="
+      background:linear-gradient(90deg,#21d4fd,#7c5cff);
+      color:white;
+      border:none;
+      font-size:1.2rem;
+      padding:16px 46px;
+      border-radius:50px;
+      cursor:pointer;
+      font-weight:700;
+      transition:all 0.3s ease;
+      box-shadow:0 8px 25px rgba(124,92,255,0.4);
+    "
+    onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 35px rgba(33,212,253,0.4)';"
+    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 25px rgba(124,92,255,0.4)';">
+      🚀 Request Demo
+    </button>
+
+    <!-- Stats -->
+    <div style="display:flex; gap:70px; flex-wrap:wrap; justify-content:center; margin-top:80px;">
+      <div>
+        <h3 style="font-size:2rem; color:#21d4fd; font-weight:700;">50K+</h3>
+        <p style="color:#d6d6ff;">Active Students</p>
+      </div>
+      <div>
+        <h3 style="font-size:2rem; color:#7c5cff; font-weight:700;">120+</h3>
+        <p style="color:#d6d6ff;">Institutions</p>
+      </div>
+      <div>
+        <h3 style="font-size:2rem; color:#21d4fd; font-weight:700;">99.9%</h3>
+        <p style="color:#d6d6ff;">Reliability</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function openDemoForm() {
+    alert("Demo form opens here");
+  }
+</script>
+
+
+<!-- Contact Section (Compact) -->
+<section id="contact" class="contact-section">
+  <div class="contact-container">
+    
+    <!-- Heading -->
+    <h2 class="contact-title">Contact Us</h2>
+    <p class="contact-subtitle">
+      Have a question or want to explore our services? Let’s connect.
+    </p>
+
+    <div class="contact-grid">
+      
+      <!-- Contact Form -->
+      <div class="contact-card">
+        <form id="contactForm" class="contact-form">
+          <input type="text" name="name" placeholder="Your Name" class="contact-input" required>
+          <input type="email" name="email" placeholder="Your Email" class="contact-input" required>
+          <textarea name="message" placeholder="Your Message" rows="3" class="contact-input" required></textarea>
+          <button type="submit" class="contact-btn">✉ Send</button>
+        </form>
+      </div>
+<!-- Map -->
+<div class="contact-card map-card" style="width: 100%; height: 300px;">
+  <iframe
+    width="100%"
+    height="100%"
+    frameborder="0"
+    src="https://www.bing.com/maps/embed?h=400&w=500&cp=16.645743~74.664261&lvl=14&typ=d&sty=r&src=SHELL&FORM=MBEDV8"
+    scrolling="no"
+    allowfullscreen=""
+    loading="lazy">
+  </iframe>
+</div>
+
+
+
+
+    </div>
+  </div>
+</section>
+
+<!-- Styles -->
+<style>
+.contact-section {
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #0b1020 0%, #101428 100%);
+  color: #e9e7ff;
+}
+
+.contact-container {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
+}
+
+.contact-title {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.contact-subtitle {
+  font-size: 0.95rem;
+  color: #c6c6f8;
+  margin-bottom: 30px;
+}
+
+.contact-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.contact-card {
+  flex: 1;
+  min-width: 280px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.map-card {
+  padding: 0;
+  min-height: 220px;
+  overflow: hidden;
+}
+
+.contact-form {
+  display: grid;
+  gap: 12px;
+}
+
+.contact-input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.contact-input:focus {
+  background: rgba(255,255,255,0.12);
+}
+
+.contact-btn {
+  background: linear-gradient(90deg, #21d4fd, #7c5cff);
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.contact-btn:hover {
+  transform: translateY(-2px);
+}
+</style>
+
+<!-- JS to handle form submit -->
+<script>
+document.getElementById("contactForm").addEventListener("submit", async function(e) {
+  e.preventDefault(); // prevent default submit
+
+  const data = {
+    name: this.name.value,
+    email: this.email.value,
+    message: this.message.value
+  };
+
+  try {
+    const response = await fetch("http://localhost:9090/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.text();
+    alert(result); // show success or error
+    this.reset(); // clear form after send
+  } catch (err) {
+    alert("Error sending message: " + err);
+  }
+});
+</script>
+
+<footer class="simple-footer">
+  <div class="footer-container">
+
+    <!-- Logo & About -->
+    <div class="footer-col">
+      <h3 class="footer-logo">ProctoVision<span>.ai</span></h3>
+      <p class="footer-desc">
+        Secure, AI-powered proctoring solutions for modern assessments.
+      </p>
+    </div>
+
+
+    <!-- Resources -->
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="resources.html">Help Center</a>
+      <a href="resources.html">Documentation</a>
+      <a href="resources.html">Blog</a>
+    </div>
+
+    <!-- Legal -->
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="Legal.html">Privacy Policy</a>
+      <a href="Legal.html">Terms of Service</a>
+      <a href="Legal.html">Security</a>
+    </div>
+
+  </div>
+
+  <!-- Bottom Bar -->
+  <div class="footer-bottom">
+    <p>© <span id="year"></span> ProctoVision.ai. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+.simple-footer {
+  background: #0b1020;
+  color: #cfcff5;
+  padding: 40px 20px 10px;
+  font-size: 0.95rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 30px;
+}
+
+.footer-logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.footer-logo span {
+  color: #7c5cff;
+}
+
+.footer-desc {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #a6a6d6;
+}
+
+.footer-col h4 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.footer-col a {
+  display: block;
+  color: #cfcff5;
+  font-size: 0.85rem;
+  margin: 4px 0;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-col a:hover {
+  color: #21d4fd;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 15px;
+  margin-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  font-size: 0.8rem;
+  color: #7777aa;
+}
+</style>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+<!-- Script for Auto Year -->
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+<!-- Script for Auto Year -->
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Your Original JS + Dynamic Year -->
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+    console.log("Custom scripts here");
+  </script>
+  <!-- Include theme file -->
+<iframe src="/theme.html" 
+        style="position:fixed; top:0; left:0; width:100%; height:0; border:none;" 
+        title="theme"></iframe>
+  
+
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Temporary Login | ProctoVision.AI</title>
+    <style>
+        /* Reset & Layout */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", Arial, sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Card Container */
+        .container {
+            background: #ffffff;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 380px;
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .container:hover {
+            transform: translateY(-4px);
+        }
+
+        /* Header */
+        h2 {
+            color: #333;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Input Fields */
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin: 10px 0;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        input:focus {
+            border-color: #4e54c8;
+            box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.1);
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #5f66d6, #9da2fc);
+            transform: translateY(-1px);
+        }
+
+        /* Error Message */
+        .error {
+            color: #d93025;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: left;
+            min-height: 18px;
+        }
+
+        /* Footer Text */
+        .note {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Temporary Login</h2>
+
+    <div class="error">
+        <span th:text="${error}"></span>
+    </div>
+
+    <form th:action="@{/invite/setup/login}" method="post">
+        <input type="hidden" name="inviteCode" th:value="${inviteCode}">
+        <input type="text" name="username" placeholder="Enter your username" required>
+        <input type="password" name="password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <div class="note">Access granted only via valid invitation link.</div>
+</div>
+
+</body>
+</html>

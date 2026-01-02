@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Dashboard - Superset Style</title>
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="../images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Logout modal inherits general modal style */
+#logoutModal .modal-content {
+  animation: slideIn 0.25s ease-out;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#f4f5f7;color:#1f1f1f;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+.sidebar{position:fixed; left:0; top:0; height:100vh; width:240px; background:#001529; color:#fff; display:flex; flex-direction:column; padding-top:20px; transition: all 0.3s;}
+.sidebar.collapsed{width:70px;}
+.sidebar .logo{font-size:24px;font-weight:700;color:#1890ff;text-align:center;margin-bottom:30px;}
+.sidebar ul{list-style:none;}
+.sidebar ul li{padding:15px 25px; cursor:pointer; display:flex; align-items:center; gap:15px; transition:0.2s;}
+.sidebar ul li:hover{background:#1890ff;}
+.sidebar ul li span{white-space:nowrap;}
+.sidebar.collapsed ul li span{display:none;}
+.header{position:fixed; top:0; left:240px; right:0; height:60px; background:#fff; display:flex; justify-content:space-between; align-items:center; padding:0 20px; box-shadow:0 2px 8px rgba(0,0,0,0.1); z-index:1000; transition: all 0.3s;}
+.header.collapsed{left:70px;}
+.header .profile-dropdown{position:relative; display:flex; align-items:center; gap:10px; cursor:pointer;}
+.header .profile-pic{width:38px;height:38px;border-radius:50%;border:2px solid #1890ff;}
+.header .dropdown-content{display:none; position:absolute; top:50px; right:0; background:#fff; border:1px solid #ddd; border-radius:8px; min-width:200px; box-shadow:0 6px 16px rgba(0,0,0,0.12); overflow:hidden;}
+.header .dropdown-content a{display:block;padding:12px 16px;color:#1f1f1f;transition:0.2s;}
+.header .dropdown-content a:hover{background:#f5f5f5;}
+.header .dropdown-content.show{display:block;}
+.main{margin-left:240px; padding:80px 30px 30px 30px; transition: all 0.3s;}
+.main.collapsed{margin-left:70px;}
+.section{margin-bottom:40px;}
+h2{margin-bottom:20px;font-size:20px;font-weight:600;color:#1890ff;}
+.stats-cards{display:flex; flex-wrap:wrap; gap:20px;}
+.card{background:#fff; padding:20px; border-radius:12px; flex:1; min-width:220px; box-shadow:0 4px 12px rgba(0,0,0,0.08); transition:all 0.3s;}
+.card:hover{transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,0.12);}
+.card h3{font-size:18px;font-weight:600;color:#000;margin-bottom:8px;}
+.card p{font-size:14px;color:#555;}
+.card button{margin-top:10px;padding:8px 14px;border:none;border-radius:6px;background:#1890ff;color:#fff;cursor:pointer;transition:all 0.3s;font-weight:500;}
+.card button:hover{background:#40a9ff;}
+.table-container{background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.08);}
+table{width:100%;border-collapse:collapse;}
+table th, table td{padding:12px;text-align:left;border-bottom:1px solid #eee;}
+table th{background:#f0f5ff;color:#1890ff;font-weight:600;}
+table tr:hover{background:#f5f5f5;}
+.modal{display:flex;opacity:0;pointer-events:none;justify-content:center;align-items:center;position:fixed;top:0; left:0;width:100%; height:100%;background: rgba(0,0,0,0.5);z-index:999;transition: opacity 0.3s;}
+.modal.show {opacity:1; pointer-events:auto;}
+.modal-content{background:#fff;border-radius:12px;width:450px;max-width:90%;padding:30px 25px;box-shadow:0 8px 24px rgba(0,0,0,0.2);text-align:center;position:relative;}
+.close-btn{position:absolute;top:15px;right:15px;background:#ff4d4f;color:#fff;border:none;padding:6px 10px;border-radius:6px;cursor:pointer;font-weight:500;transition:all 0.2s;}
+.close-btn:hover{background:#ff7875;}
+@media(max-width:900px){.sidebar{width:70px;}.header{left:70px;}.main{margin-left:70px;padding:80px 20px 20px 20px;}.sidebar.collapsed{width:0;}.header.collapsed{left:0;}.main.collapsed{margin-left:0;}}
+</style>
+</head>
+<body>
+<!-- Logout Confirmation Modal -->
+<div id="logoutModal" class="modal">
+  <div class="modal-content" style="max-width:400px;text-align:center;">
+    <h3 style="color:#1890ff;font-size:22px;margin-bottom:10px;">Confirm Logout</h3>
+    <p style="font-size:15px;color:#555;margin-bottom:25px;">Are you sure you want to log out of your account?</p>
+    <div style="display:flex;justify-content:center;gap:15px;">
+      <button id="cancelLogout" style="padding:10px 20px;border:none;border-radius:8px;background:#ccc;color:#000;cursor:pointer;font-weight:500;">Cancel</button>
+      <button id="confirmLogout" style="padding:10px 20px;border:none;border-radius:8px;background:#ff4d4f;color:#fff;cursor:pointer;font-weight:600;">Logout</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="logo">Proctovision</div>
+  <ul>
+    <li onclick="showSection('dashboard')">🏠 <span>Dashboard</span></li>
+    <li onclick="showSection('exams')">📚 <span>Exams</span></li>
+    <li onclick="showSection('results')">📝 <span>Results</span></li>
+    <li onclick="showSection('notifications')">🔔 <span>Notifications</span></li>
+  </ul>
+</div>
+
+<!-- Header -->
+<div class="header" id="header">
+  <div></div>
+  <div class="profile-dropdown" id="profileDropdown">
+    <img id="profilePic" class="profile-pic" src="uploads/default.png" alt="Profile">
+    <span id="studentName">Student ▼</span>
+    <div class="dropdown-content" id="dropdownContent">
+      <a href="#" id="myAccountBtn">My Account</a>
+      <a href="#" onclick="logout()">Logout</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main" id="mainContent">
+  <div id="dashboard" class="section">
+    <h2>Dashboard</h2>
+    <div class="stats-cards">
+      <div class="card" id="upcomingExamsCard">
+        <h3>Upcoming Exams</h3>
+        <p id="upcomingExamsCount">0</p>
+      </div>
+      <div class="card" id="resultsCard">
+        <h3>Results</h3>
+        <p id="resultsCount">0</p>
+      </div>
+      <div class="card" id="notificationsCard">
+        <h3>Notifications</h3>
+        <p id="notificationsCount">0</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="exams" class="section" style="display:none;">
+    <h2>Upcoming Exams</h2>
+    <div class="table-container">
+      <table id="examTable">
+        <thead><tr><th>Title</th><th>Date</th><th>Duration</th><th>Action</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="results" class="section" style="display:none;">
+    <h2>Past Results</h2>
+    <div class="table-container">
+      <table id="resultsTable">
+        <thead><tr><th>Exam</th><th>Score</th><th>Date</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="notifications" class="section" style="display:none;">
+    <h2>Notifications</h2>
+    <div class="table-container">
+      <table id="notificationsTable">
+        <thead><tr><th>Message</th><th>Date</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- My Account Modal -->
+<div id="accountModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" id="closeModal">×</button>
+    <div id="viewProfile" style="text-align:center;">
+      <img id="accProfilePicView" src="uploads/default.png" style="width:120px;height:120px;border-radius:50%;border:4px solid #1890ff;">
+      <h3 id="accUsernameView" style="margin-top:15px;font-size:24px;font-weight:600;color:#1890ff;"></h3>
+      <p id="accEmailView" style="color:#555;font-size:16px;"></p>
+      <button id="editProfileBtn" style="margin-top:20px;width:60%;padding:10px 0;background:linear-gradient(90deg,#1890ff,#40a9ff);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;">Update Account</button>
+    </div>
+    <div id="editProfile" style="display:none;text-align:center;margin-top:15px;">
+      <div style="position:relative;display:inline-block;">
+        <img id="accProfilePicEdit" src="uploads/default.png" style="width:120px;height:120px;border-radius:50%;border:4px solid #1890ff;">
+        <input type="file" id="profilePicInput" style="display:none" accept="image/*">
+        <div id="uploadBtn" style="position:absolute;bottom:0;right:0;width:35px;height:35px;background:linear-gradient(45deg,#52c41a,#1890ff);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;">
+          <i class="fas fa-camera" style="color:#fff;font-size:16px;"></i>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:15px;margin-top:15px;">
+        <input type="text" id="usernameInput" placeholder="Username" style="padding:10px;border-radius:8px;border:1px solid #ccc;font-size:15px;">
+        <input type="email" id="emailInput" placeholder="Email" style="padding:10px;border-radius:8px;border:1px solid #ccc;font-size:15px;">
+      </div>
+      <button id="saveProfileBtn" style="margin-top:20px;width:60%;padding:10px 0;background:linear-gradient(90deg,#1890ff,#40a9ff);color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const studentId = localStorage.getItem("studentId") || 1;
+const modal = document.getElementById("accountModal");
+const viewProfile = document.getElementById("viewProfile");
+const editProfile = document.getElementById("editProfile");
+const accProfilePicView = document.getElementById("accProfilePicView");
+const accUsernameView = document.getElementById("accUsernameView");
+const accEmailView = document.getElementById("accEmailView");
+const editProfileBtn = document.getElementById("editProfileBtn");
+const accProfilePicEdit = document.getElementById("accProfilePicEdit");
+const profilePicInput = document.getElementById("profilePicInput");
+const usernameInput = document.getElementById("usernameInput");
+const emailInput = document.getElementById("emailInput");
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+const uploadBtn = document.getElementById("uploadBtn");
+const profileDropdown = document.getElementById("profileDropdown");
+const dropdownContent = document.getElementById("dropdownContent");
+
+// Load student profile
+function loadStudentData(callback){
+  fetch(`/api/students/${studentId}`)
+    .then(res=>res.json())
+    .then(student=>{
+      const pic = student.profilePic || "default.png";
+      document.getElementById("profilePic").src = "/uploads/"+pic;
+      document.getElementById("studentName").innerText = (student.username||"Student")+" ▼";
+      accProfilePicView.src = "/uploads/"+pic;
+      accUsernameView.innerText = student.username||"";
+      accEmailView.innerText = student.email||"";
+      accProfilePicEdit.src = "/uploads/"+pic;
+      usernameInput.value = student.username||"";
+      emailInput.value = student.email||"";
+      if(callback) callback();
+    }).catch(err=>{console.error(err); alert("Failed to load profile"); });
+}
+
+loadStudentData();
+
+// Profile dropdown
+profileDropdown.addEventListener("click", e => { e.stopPropagation(); dropdownContent.classList.toggle("show"); });
+window.addEventListener("click", ()=>{ dropdownContent.classList.remove("show"); });
+document.getElementById("myAccountBtn").onclick = ()=>{ 
+  loadStudentData(()=>{ viewProfile.style.display="block"; editProfile.style.display="none"; modal.classList.add("show"); });
+};
+document.getElementById("closeModal").onclick = ()=> modal.classList.remove("show");
+window.onclick = e => { if(e.target===modal) modal.classList.remove("show"); };
+editProfileBtn.onclick = ()=>{ viewProfile.style.display="none"; editProfile.style.display="block"; };
+uploadBtn.onclick = ()=> profilePicInput.click();
+profilePicInput.onchange = e => { const file=e.target.files[0]; if(file) accProfilePicEdit.src=URL.createObjectURL(file); };
+
+// Save profile
+saveProfileBtn.onclick = ()=>{
+  const formData = new FormData();
+  formData.append("username", usernameInput.value);
+  formData.append("email", emailInput.value);
+  if(profilePicInput.files[0]) formData.append("profilePic", profilePicInput.files[0]);
+
+  fetch(`/api/students/${studentId}/update`, { method:"POST", body:formData })
+    .then(res=>{ if(!res.ok) throw new Error("Network error"); return res.json(); })
+    .then(updated=>{ 
+      alert("Profile updated successfully!");
+      loadStudentData(()=>{ viewProfile.style.display="block"; editProfile.style.display="none"; });
+    })
+    .catch(err=>{ console.error(err); alert("Failed to update profile"); });
+};
+
+// Section navigation
+function showSection(id){ 
+  ['dashboard','exams','results','notifications'].forEach(s=>{ 
+    document.getElementById(s).style.display=(s===id)?'block':'none'; 
+  });
+}
+
+//Load exams
+function loadExams(){
+  fetch(`/api/students/${studentId}/exams`)
+    .then(r=>r.json())
+    .then(exams=>{
+      exams = Array.isArray(exams)?exams:(exams.data||[]);
+      document.getElementById("upcomingExamsCount").innerText = exams.length;
+      const tbody = document.querySelector("#examTable tbody"); 
+      tbody.innerHTML = "";
+
+      const today = new Date();
+      today.setHours(0,0,0,0); // reset time to midnight for comparison
+
+      exams.forEach(e=>{
+        const examDateObj = new Date(e.examDate);
+        const examDateStr = examDateObj.toLocaleDateString();
+        const tr = document.createElement("tr");
+
+        // Check if exam is today
+        const isToday = examDateObj.setHours(0,0,0,0) === today.getTime();
+
+        tr.innerHTML = `
+          <td>${e.title}</td>
+          <td>${examDateStr}</td>
+          <td>${e.durationMinutes} mins</td>
+          <td>
+            <button onclick="startExam(${e.id})" 
+              ${isToday ? '' : 'disabled'} 
+              style="background:${isToday?'#52c41a':'#ccc'};cursor:${isToday?'pointer':'not-allowed'}">
+              Start
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }).catch(console.error);
+}
+
+
+// Start exam → go to system-check page
+function startExam(examId){
+  localStorage.setItem('currentExamId', examId);
+  window.location.href = '/student/system-check.html';
+}
+
+// Load past results
+function loadResults(){
+  fetch(`/api/students/${studentId}/results`)
+    .then(r=>r.json())
+    .then(results=>{
+      results = Array.isArray(results)?results:(results.data||[]);
+      document.getElementById("resultsCount").innerText = results.length;
+      const tbody = document.querySelector("#resultsTable tbody"); tbody.innerHTML="";
+      results.forEach(r=>{
+        const resultDate = new Date(r.exam.examDate).toLocaleDateString();
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.exam.title}</td><td>${r.score}</td><td>${resultDate}</td>`;
+        tbody.appendChild(tr);
+      });
+    }).catch(console.error);
+}
+
+// Load notifications
+function loadNotifications(){
+  fetch(`/api/students/${studentId}/notifications`)
+    .then(res=>res.json())
+    .then(notes=>{
+      notes = Array.isArray(notes)?notes:(notes.data||[]);
+      document.getElementById("notificationsCount").innerText = notes.length;
+      const tbody = document.querySelector("#notificationsTable tbody");
+      tbody.innerHTML="";
+      notes.forEach(n=>{
+        const noteDate = new Date(n.createdAt).toLocaleDateString();
+        const tr = document.createElement("tr");
+        tr.innerHTML=`<td>${n.message}</td><td>${noteDate}</td>`;
+        tbody.appendChild(tr);
+      });
+      const unreadCount = notes.filter(n=>!n.read).length;
+      const card = document.getElementById("notificationsCard");
+      card.style.border = unreadCount>0?"2px solid #ff4d4f":"";
+    }).catch(err=>console.error("Failed to load notifications",err));
+}
+
+function logout() {
+	  const logoutModal = document.getElementById("logoutModal");
+	  logoutModal.classList.add("show");
+
+	  // Close if clicked outside
+	  window.onclick = e => { 
+	    if (e.target === logoutModal) logoutModal.classList.remove("show");
+	  };
+
+	  document.getElementById("cancelLogout").onclick = () => {
+	    logoutModal.classList.remove("show");
+	  };
+
+	  document.getElementById("confirmLogout").onclick = () => {
+	    localStorage.clear();
+	    logoutModal.classList.remove("show");
+	    window.location.href = "/login.html";
+	  };
+	}
+
+
+// Initialize all
+loadExams();
+loadResults();
+loadNotifications();
+</script>
+
+</body>
+</html>

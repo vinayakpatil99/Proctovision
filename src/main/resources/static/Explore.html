@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProctoVision.ai Platform</title>
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/robot.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin:0; padding:0;
+    font-family:'Inter',sans-serif;
+    background: linear-gradient(180deg,#0b1020,#101733);
+    color:#eef2ff;
+    overflow-x:hidden;
+    text-align:center;
+  }
+
+  .container {
+    max-width:900px;
+    margin:120px auto;
+    padding:0 20px;
+  }
+
+  h2 {
+    font-size:3rem;
+    font-weight:700;
+    margin-bottom:40px;
+    text-shadow:0 0 20px rgba(124,92,255,0.7);
+  }
+
+  .nav-buttons {
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    margin-bottom:60px;
+  }
+
+  .nav-buttons button,
+  #back-home {
+    padding:14px 28px;
+    font-size:1rem;
+    border:none;
+    border-radius:14px;
+    background: linear-gradient(90deg,#7c5cff,#21d4fd);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .nav-buttons button:hover,
+  #back-home:hover {
+    transform: scale(1.05);
+    box-shadow:0 0 20px rgba(124,92,255,0.8);
+  }
+
+  #ajax-content {
+    background: rgba(255,255,255,0.05);
+    padding:50px;
+    border-radius:24px;
+    backdrop-filter: blur(15px);
+    box-shadow:0 10px 50px rgba(0,0,0,0.6);
+    min-height:250px;
+    transition: all 0.5s;
+    text-align:left;
+  }
+
+  #ajax-content h3 {
+    font-size:2rem;
+    margin-bottom:20px;
+    background: linear-gradient(90deg,#7c5cff,#21d4fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  #ajax-content p {
+    font-size:1.1rem;
+    line-height:1.7;
+    color:#d0d0ff;
+  }
+
+  .pricing-buttons {
+    margin-top:30px;
+    display:flex;
+    justify-content:center;
+    gap:20px;
+  }
+
+  .pricing-buttons a {
+    display:inline-block;
+    padding:12px 28px;
+    border-radius:14px;
+    background: linear-gradient(90deg,#7c5cff,#21d4fd);
+    color:#fff;
+    font-weight:600;
+    text-decoration:none;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .pricing-buttons a:hover {
+    transform: scale(1.05);
+    box-shadow:0 0 20px rgba(124,92,255,0.8);
+  }
+
+  #back-home {
+    margin-top:30px;
+  }
+
+  .fade-out { animation: fadeOut 0.4s forwards; }
+  .fade-in { animation: fadeIn 0.4s forwards; }
+  @keyframes fadeOut { 0% {opacity:1; transform: translateY(0);} 100% {opacity:0; transform: translateY(-20px);} }
+  @keyframes fadeIn { 0% {opacity:0; transform: translateY(20px);} 100% {opacity:1; transform: translateY(0);} }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Explore ProctoVision.ai</h2>
+
+  <div class="nav-buttons">
+    <button data-section="overview">Overview</button>
+    <button data-section="features">Features</button>
+    <button data-section="pricing">Pricing</button>
+  </div>
+
+  <div id="ajax-content">
+    <h3>Welcome!</h3>
+    <p>Click a button above to learn more about ProctoVision.ai.</p>
+  </div>
+
+  <button id="back-home">Back to Home</button>
+</div>
+
+<script>
+const ajaxContent = document.getElementById('ajax-content');
+const backHomeBtn = document.getElementById('back-home');
+
+const contentData = {
+  overview: {
+    title:'Overview',
+    text:'ProctoVision.ai is a cutting-edge AI-powered proctoring platform ensuring secure, real-time online exams. It monitors candidates, detects anomalies, and maintains assessment integrity using seamless AI automation.'
+  },
+  features: {
+    title:'Features',
+    text:'Our platform offers real-time monitoring, AI anomaly detection, multi-device support, detailed analytics, and instant reporting, providing exam administrators complete control and peace of mind.'
+  },
+  pricing: {
+    title:'Pricing',
+    text:'Flexible plans for educational institutions and corporate clients, ranging from basic per-exam pricing to premium enterprise subscriptions with dedicated support and advanced analytics.',
+    buttons:'<div class="pricing-buttons"><a href="demo-request.html">Request Demo</a><a href="home.html#contact">Contact Us</a></div>'
+  }
+};
+
+// Show section content
+const buttons = document.querySelectorAll('.nav-buttons button');
+buttons.forEach(button => {
+  button.addEventListener('click', ()=>{
+    const section = button.getAttribute('data-section');
+    ajaxContent.classList.add('fade-out');
+    setTimeout(()=>{
+      let html = `<h3>${contentData[section].title}</h3><p>${contentData[section].text}</p>`;
+      if(contentData[section].buttons) html += contentData[section].buttons;
+      ajaxContent.innerHTML = html;
+      ajaxContent.classList.remove('fade-out');
+      ajaxContent.classList.add('fade-in');
+      setTimeout(()=> ajaxContent.classList.remove('fade-in'),400);
+    },400);
+  });
+});
+
+// Back to home button → redirect to home.html
+backHomeBtn.addEventListener('click', ()=>{
+  window.location.href = "home.html";
+});
+</script>
+
+</body>
+</html>

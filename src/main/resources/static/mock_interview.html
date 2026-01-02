@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Mock Interview — Mock Room</title>
+  <style>
+    :root{
+      --bg:#0f172a; --card:#0b1220; --muted:#94a3b8; --accent:#06b6d4; --danger:#ef4444;
+    }
+    body { margin:0; font-family:Inter,system-ui,Arial; background:var(--bg); color:#fff; height:100vh; }
+    .wrap { display:flex; height:100vh; }
+    .main { flex: 1; padding:18px; box-sizing:border-box; display:flex; flex-direction:column; gap:12px; }
+    .top { display:flex; gap:12px; }
+    .tile { flex:1; background:var(--card); border-radius:10px; overflow:hidden; position:relative; min-height:320px; display:flex; align-items:center; justify-content:center; }
+    .label { position:absolute; left:10px; bottom:10px; background:rgba(0,0,0,0.45); padding:6px 10px; border-radius:8px; color:#cfeaf4; font-size:14px; }
+    #aiCanvas{ width:100%; height:100%; display:block; }
+    video { width:100%; height:100%; object-fit:cover; display:block; }
+    .controls { display:flex; gap:8px; align-items:center; justify-content:center; margin-top:6px; }
+    .controls button { background:transparent; border:1px solid rgba(255,255,255,0.06); color:#fff; padding:10px 14px; border-radius:8px; cursor:pointer; }
+    .controls .danger { background:var(--danger); border:none; }
+    .side { width:360px; border-left:1px solid #223147; display:flex; flex-direction:column; background:#071227; }
+    .side .header { padding:12px; border-bottom:1px solid #223147; display:flex; justify-content:space-between; align-items:center; }
+    .chat { flex:1; padding:12px; overflow:auto; }
+    .input-area { padding:10px; border-top:1px solid #223147; display:flex; gap:8px; }
+    .input-area input { flex:1; padding:10px; border-radius:8px; border:none; background:#071227; color:#fff; }
+    .msg-ai { background: rgba(255,255,255,0.03); padding:8px 10px; border-radius:8px; margin-bottom:8px; }
+    .msg-user { background: rgba(6,182,212,0.06); padding:8px 10px; border-radius:8px; margin-bottom:8px; text-align:right; }
+    .small { font-size:12px; color:var(--muted); }
+    .controls-bottom { position:fixed; left:50%; transform:translateX(-50%); bottom:24px; display:flex; gap:10px; background:rgba(11,18,32,0.9); padding:8px 16px; border-radius:40px; }
+    .controls-bottom button { background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.1); border-radius:50%; width:44px; height:44px; cursor:pointer; font-size:20px; }
+    #speakBtn.listening { background:var(--accent); color:#000; }
+    @media(max-width:1000px){ .side{ width:320px } .tile{ min-height:220px } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="main">
+      <div class="top">
+        <div class="tile">
+          <canvas id="aiCanvas" width="800" height="450"></canvas>
+          <div class="label">AI Interviewer</div>
+        </div>
+        <div class="tile">
+          <video id="localVideo" autoplay playsinline muted></video>
+          <div class="label" id="candidateLabel">Candidate</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; align-items:center;">
+        <select id="role" style="padding:8px;border-radius:8px;background:#071227;color:#fff;border:1px solid rgba(255,255,255,0.04);">
+          <option>Backend Developer</option>
+          <option>Frontend Developer</option>
+          <option>Data Scientist</option>
+          <option>Machine Learning Engineer</option>
+          <option>DevOps Engineer</option>
+        </select>
+        <select id="experience" style="padding:8px;border-radius:8px;background:#071227;color:#fff;border:1px solid rgba(255,255,255,0.04);">
+          <option>Fresher</option>
+          <option>0-1 years</option>
+          <option>1-3 years</option>
+          <option>3-5 years</option>
+          <option>5+ years</option>
+        </select>
+
+        <div class="controls" style="margin-left:auto;">
+          <button id="btnStart">Start Interview</button>
+          <button id="btnSkip">Skip Q</button>
+          <button id="btnEnd" class="danger">End Interview</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="header">
+        <div style="font-weight:700">Chat</div>
+        <div class="small" id="status">Idle</div>
+      </div>
+
+      <div class="chat" id="chat">
+        <!-- messages appended here -->
+      </div>
+
+      <div class="input-area">
+        <input id="chatInput" placeholder="Type answer or press 🎙️ to speak..." />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom controls -->
+  <div class="controls-bottom">
+    <button id="toggleCam">🎥</button>
+    <button id="toggleMic">🎙️</button>
+    <button id="speakBtn" title="Click to Speak">🎤</button>
+    <button id="helpBtn">ℹ️</button>
+  </div>
+
+<script>
+/* ---------------------------
+   UI + media + backend logic
+   --------------------------- */
+const aiCanvas = document.getElementById('aiCanvas');
+const ctx = aiCanvas.getContext('2d');
+const localVideo = document.getElementById('localVideo');
+const chatEl = document.getElementById('chat');
+const statusEl = document.getElementById('status');
+const speakBtn = document.getElementById('speakBtn');
+
+let sessionId = null;
+let localStream = null;
+let recognition = null;
+
+// draw simple AI avatar
+let angle = 0;
+function drawAI(text) {
+  ctx.fillStyle = '#021627';
+  ctx.fillRect(0,0,aiCanvas.width, aiCanvas.height);
+  const cx = aiCanvas.width/2, cy = aiCanvas.height/2 - 10;
+  const r = 60 + Math.sin(angle) * 8;
+  angle += 0.05;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = '#06374a'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, r*0.6, 0, Math.PI*2); ctx.fillStyle = '#07a9bf'; ctx.fill();
+  ctx.fillStyle = '#e6eef6'; ctx.font = '20px Inter, sans-serif'; ctx.textAlign='center';
+  wrapText(text || 'AI Interviewer', cx, cy + r + 28, 520, 18);
+  requestAnimationFrame(()=>drawAI(text));
+}
+function wrapText(text, x, y, maxWidth, lineHeight) {
+  ctx.fillStyle = '#e6eef6';
+  if(!text) return;
+  const words = text.split(' ');
+  let line = '', iy = 0;
+  for(let n=0;n<words.length;n++) {
+    const testLine = line + words[n] + ' ';
+    const metrics = ctx.measureText(testLine);
+    if(metrics.width > maxWidth && n > 0) {
+      ctx.fillText(line, x, y + lineHeight*iy);
+      line = words[n] + ' ';
+      iy++;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, y + lineHeight*iy);
+}
+drawAI('Ready');
+
+// start camera
+async function startCamera() {
+  try {
+    localStream = await navigator.mediaDevices.getUserMedia({ video: { width:640, height:360 }, audio: true });
+    localVideo.srcObject = localStream;
+  } catch(e) {
+    console.error('getUserMedia error', e);
+    alert('Please enable camera & microphone.');
+  }
+}
+startCamera();
+
+// simple helpers to append messages
+function appendAi(msg) {
+  const d = document.createElement('div'); d.className = 'msg-ai'; d.innerHTML = '<b>AI:</b> ' + escapeHtml(msg); chatEl.appendChild(d); chatEl.scrollTop = chatEl.scrollHeight;
+}
+function appendUser(msg) {
+  const d = document.createElement('div'); d.className = 'msg-user'; d.innerHTML = '<b>You:</b> ' + escapeHtml(msg); chatEl.appendChild(d); chatEl.scrollTop = chatEl.scrollHeight;
+}
+function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// REST calls
+async function startInterview() {
+  const role = document.getElementById('role').value;
+  const experience = document.getElementById('experience').value;
+  statusEl.innerText = 'Starting...';
+  try {
+    const res = await fetch('/api/interview/start', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ role, experience })
+    });
+    const data = await res.json();
+    sessionId = data.sessionId;
+    const q = data.question;
+    appendAi(q);
+    speak(q);
+    statusEl.innerText = 'Interview started';
+  } catch(e) {
+    console.error(e); statusEl.innerText = 'Error starting';
+    alert('Error: check backend console and API key.');
+  }
+}
+
+async function submitAnswerAndShow(text) {
+  if(!sessionId) { alert('Start the interview first'); return; }
+  appendUser(text);
+  statusEl.innerText = 'Waiting for AI...';
+  try {
+    const r = await fetch('/api/interview/answer', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ sessionId, answer: text })
+    });
+    const body = await r.json();
+    if(body && body.response) {
+      appendAi(body.response);
+      speak(body.response);
+      statusEl.innerText = 'AI responded';
+    } else {
+      statusEl.innerText = 'No response';
+    }
+  } catch(e) {
+    console.error(e); statusEl.innerText = 'Error';
+    alert('Error contacting backend');
+  }
+}
+
+// speech synthesis
+function speak(text) {
+  if(!('speechSynthesis' in window)) return;
+  try {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  } catch(e) { console.warn('TTS error', e); }
+}
+
+// speech recognition
+function setupRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) { recognition = null; return; }
+  recognition = new SR();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = (evt) => {
+    const text = evt.results[0][0].transcript;
+    submitAnswerAndShow(text);
+    speakBtn.classList.remove('listening');
+  };
+  recognition.onerror = (e) => { console.warn('SR error', e); statusEl.innerText = 'Recognition error'; speakBtn.classList.remove('listening'); };
+  recognition.onend = () => { statusEl.innerText = 'Recognition ended'; speakBtn.classList.remove('listening'); };
+}
+setupRecognition();
+
+// voice button click
+speakBtn.addEventListener('click', () => {
+  if(!recognition) return alert('Speech recognition not supported in this browser (use Chrome).');
+  try {
+    recognition.start(); 
+    statusEl.innerText = 'Listening...';
+    speakBtn.classList.add('listening');
+  } catch(e) { console.warn(e); }
+});
+
+// buttons
+document.getElementById('btnStart').addEventListener('click', () => startInterview());
+document.getElementById('btnSkip').addEventListener('click', () => submitAnswerAndShow('[skip]'));
+document.getElementById('btnEnd').addEventListener('click', () => {
+  appendAi('Interview ended. Thank you.');
+  statusEl.innerText = 'Ended';
+  sessionId = null;
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
+});
+
+// chat send
+document.getElementById('sendBtn').addEventListener('click', () => {
+  const v = document.getElementById('chatInput').value.trim();
+  if(!v) return;
+  submitAnswerAndShow(v);
+  document.getElementById('chatInput').value = '';
+});
+
+// toggle cam/mic (simple)
+document.getElementById('toggleCam').addEventListener('click', ()=> {
+  if(!localStream) return;
+  const vTracks = localStream.getVideoTracks();
+  if(vTracks.length) vTracks[0].enabled = !vTracks[0].enabled;
+});
+document.getElementById('toggleMic').addEventListener('click', ()=> {
+  if(!localStream) return;
+  const aTracks = localStream.getAudioTracks();
+  if(aTracks.length) aTracks[0].enabled = !aTracks[0].enabled;
+});
+
+// help
+document.getElementById('helpBtn').addEventListener('click', ()=> 
+  alert('🎙️ Click the mic button to speak your answer.\n💬 Or type in the chat box.\nStart the interview first!')
+);
+</script>
+</body>
+</html>

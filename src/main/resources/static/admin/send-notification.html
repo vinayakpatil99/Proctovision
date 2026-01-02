@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Send Notification</title>
+<!-- For plain HTML -->
+<link rel="icon" type="image/png" href="../images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+</head>
+<body>
+<h2>Send Notification</h2>
+
+<select id="studentSelect"><option value="">Select Student</option></select>
+<br><br>
+<textarea id="messageInput" placeholder="Enter notification message"></textarea>
+<br><br>
+<button id="sendBtn">Send Notification</button>
+
+<script>
+// Load students
+fetch("/api/students")
+.then(res => res.json())
+.then(students => {
+    const select = document.getElementById("studentSelect");
+    students.forEach(s => {
+        const option = document.createElement("option");
+        option.value = s.id;
+        option.textContent = s.username;
+        select.appendChild(option);
+    });
+})
+.catch(err => console.error("Failed to load students:", err));
+
+// Send notification
+document.getElementById("sendBtn").onclick = () => {
+    const studentSelect = document.getElementById("studentSelect");
+    const studentId = studentSelect.value;
+    const studentName = studentSelect.options[studentSelect.selectedIndex].text;
+    const message = document.getElementById("messageInput").value.trim();
+
+    if(!studentId) return alert("Please select a student");
+    if(!message) return alert("Please enter a message");
+
+    fetch(`/api/notifications/send?studentId=${studentId}&message=${encodeURIComponent(message)}`, { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+            alert(`Notification sent to ${studentName}!`);
+            document.getElementById("messageInput").value = "";
+            studentSelect.value = "";
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Failed to send notification");
+        });
+};
+</script>
+</body>
+</html>

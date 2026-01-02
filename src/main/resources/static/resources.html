@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources | ProctoVision AI</title>
+  <!-- For plain HTML -->
+<link rel="icon" type="image/png" href="/images/logoprocto.png">
+
+<!-- For Thymeleaf templates -->
+<link rel="icon" type="image/png" th:href="@{/images/robot.png}">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #101428;
+      color: #e9e7ff;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: #21d4fd;
+      border-bottom: 1px solid #21d4fd;
+      padding-bottom: 5px;
+      margin-top: 25px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #cfcfff;
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-bottom: 20px;
+    }
+
+    ul li {
+      margin-bottom: 8px;
+    }
+
+    .btn-home,
+    .btn-contact {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 18px;
+      background: linear-gradient(90deg, #21d4fd, #7c5cff);
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-home:hover,
+    .btn-contact:hover {
+      transform: translateY(-2px);
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .search-box::placeholder {
+      color: #cfcfff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Resources | ProctoVision AI</h1>
+
+    <!-- Help Center Section -->
+    <section id="help-center">
+      <h2>Help Center</h2>
+      <ul>
+        <li>Getting Started with ProctoVision AI</li>
+        <li>Account Setup and Login Issues</li>
+        <li>AI Proctoring Features Explained</li>
+        <li>FAQs and Troubleshooting</li>
+      </ul>
+    </section>
+
+    <!-- Documentation Section -->
+    <section id="documentation">
+      <h2>Documentation</h2>
+      <input type="text" class="search-box" id="docSearch" placeholder="Search documents...">
+
+      <div>
+        <h3>Key Features:</h3>
+        <ul>
+          <li>Real-time monitoring using AI algorithms</li>
+          <li>Facial recognition for identity verification</li>
+          <li>Detection of unauthorized materials and behaviors</li>
+          <li>Secure browser environment to prevent cheating</li>
+          <li>Comprehensive analytics and reporting tools</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Technical Specifications:</h3>
+        <ul>
+          <li>Utilizes OpenCV and YOLO for object detection</li>
+          <li>Integrates with existing Learning Management Systems (LMS)</li>
+          <li>Compatible with Windows, macOS, and Linux platforms</li>
+          <li>Supports multiple webcam and microphone configurations</li>
+          <li>Ensures compliance with data privacy regulations</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Setup and Integration:</h3>
+        <ul>
+          <li>Step-by-step installation guide</li>
+          <li>API documentation for seamless integration</li>
+          <li>Configuration options for exam parameters</li>
+          <li>Support for custom branding and theming</li>
+          <li>24/7 technical support and community forums</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Security and Compliance:</h3>
+        <ul>
+          <li>End-to-end encryption for data transmission</li>
+          <li>Regular security audits and vulnerability assessments</li>
+          <li>Adherence to GDPR and other international standards</li>
+          <li>Role-based access control for administrators</li>
+          <li>Audit trails for all user activities</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Best Practices:</h3>
+        <ul>
+          <li>Regular updates to AI models for improved accuracy</li>
+          <li>Training sessions for instructors and proctors</li>
+          <li>Clear communication of exam policies to students</li>
+          <li>Periodic review of system performance metrics</li>
+          <li>Feedback mechanisms for continuous improvement</li>
+        </ul>
+      </div>
+
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog">
+      <h2>Blog</h2>
+      <ul>
+        <li>Latest Updates on AI Proctoring Technology</li>
+        <li>Case Studies and Success Stories</li>
+        <li>Tips for Secure Online Exams</li>
+        <li>Announcements and News</li>
+      </ul>
+    </section>
+
+    <!-- Back to Home Button -->
+    <a href="home.html" class="btn-home">← Back to Home</a>
+  </div>
+
+  <script>
+    // Search functionality for documents
+    document.getElementById('docSearch').addEventListener('input', function() {
+      const filter = this.value.toLowerCase();
+      const docs = document.querySelectorAll('section#documentation div');
+      docs.forEach(doc => {
+        const text = doc.textContent.toLowerCase();
+        doc.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>

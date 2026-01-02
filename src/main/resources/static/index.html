@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProctoVision.ai</title>
+<!-- Favicon -->
+<link rel="icon" type="image/png" href="/images/logoprocto.png">
+
+<style> 
+  :root {
+    --bg: #ffffff;
+    --brand1: #0d47a1; /* Navy */
+    --brand2: #00c8ff; /* Bright Cyan */
+    --text: #111;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: var(--bg);
+    display: grid;
+    place-items: center;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+  }
+
+  /* Container */
+  .wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 0.8s ease-out both;
+  }
+
+  /* Logo (static PNG) */
+  .symbol {
+    width: 80px;
+    height: 80px;
+  }
+  .symbol img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Brand Text */
+  .brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, var(--brand1), var(--brand2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: slideUp 0.9s ease-out both 0.2s;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px);}
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px);}
+    to { opacity: 1; transform: none; }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; transform: scale(1.05);}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap" id="wrap">
+    <!-- Static PNG Logo -->
+    <div class="symbol">
+      <img src="images/logoprocto.png" alt="ProctoVision Logo">
+    </div>
+
+    <!-- Brand Name -->
+    <div class="brand">ProctoVision.ai</div>
+  </div>
+
+<script>
+  // Redirect after splash with fade-out
+  const REDIRECT_TO = "home.html"; // Change if needed
+  const SHOW_MS = 2200; // Splash duration
+
+  setTimeout(() => {
+    // Apply fadeOut animation
+    const wrap = document.getElementById("wrap");
+    wrap.style.animation = "fadeOut 0.6s ease forwards";
+    
+    // Redirect after animation
+    setTimeout(() => {
+      window.location.href = REDIRECT_TO;
+    }, 600); // match animation duration
+  }, SHOW_MS);
+</script>
+</body>
+</html>

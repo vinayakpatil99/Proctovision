@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complete Your Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 350px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #4e54c8;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #6c6ef3;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Complete Your Registration</h2>
+
+    <!-- Error message -->
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <form method="post" action="/invite/setup" onsubmit="return validatePasswords()">
+        <input type="hidden" id="inviteCodeInput" name="inviteCode" th:value="${accessCode}">
+
+        <input type="text" name="username" placeholder="Choose Username" required>
+
+        <input type="password" name="password" id="password" placeholder="Choose Password" required>
+
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    // Populate hidden input from URL parameter if not set
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('inviteCode');
+    if (code) {
+        document.getElementById('inviteCodeInput').value = code;
+    }
+
+    function validatePasswords() {
+        const pass = document.getElementById('password').value;
+        const confirmPass = document.getElementById('confirmPassword').value;
+
+        if (pass !== confirmPass) {
+            alert("Passwords do not match!");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>
