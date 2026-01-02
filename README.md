@@ -137,11 +137,14 @@ MySQL Database
 ![Extra Screenshot 4](screenshots/Screenshot%202025-10-15%20104244.png)
 ![Extra Screenshot 5](screenshots/Screenshot%202025-10-15%20111122.png)
 ![Extra Screenshot 6](screenshots/Screenshot%202025-10-29%20122043.png)
-
-
 ## 🧪 Testing & Validation
+| Test Case | Expected Result | Status |
+|-----------|----------------|--------|
+| User login | Successful login for valid credentials | ✅ Passed |
+| Admin create exam | Exam created & stored in DB | ✅ Passed |
+| Exam monitoring | Suspicious activity detected | ✅ Passed |
+| Page switch detection | Candidate flagged | ✅ Passed |
 
-The system was tested to ensure correctness, security, and reliability.
 
 ### ✔ Testing Types
 - Unit Testing
