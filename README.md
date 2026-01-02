@@ -116,6 +116,9 @@ MySQL Database
 ![Home Page](screenshots/Screenshot%202025-10-03%20115032.png)
 
 ### 🔐 Login Page
+![Login Page](screenshots/Screenshot%202025-10-14%20131531.png)
+
+### 🔐 Login Page 2
 ![Login Page](screenshots/Screenshot%202025-10-14%20134617.png)
 
 ### 📊 Admin Dashboard
@@ -128,13 +131,12 @@ MySQL Database
 ![Test Cases](screenshots/Screenshot%202025-10-14%20141106.png)
 
 ### 🔹 Extra Screenshots
-
-![Screenshot](screenshots/Screenshot%202025-10-15%20092310.png)  
-![Screenshot](screenshots/Screenshot%202025-10-15%20092703.png)  
-![Screenshot](screenshots/Screenshot%202025-10-15%20100852.png)  
-![Screenshot](screenshots/Screenshot%202025-10-15%20104244.png)  
-![Screenshot](screenshots/Screenshot%202025-10-15%20111122.png)  
-![Screenshot](screenshots/Screenshot%202025-10-29%20122043.png)
+![Extra Screenshot 1](screenshots/Screenshot%202025-10-15%20092310.png)
+![Extra Screenshot 2](screenshots/Screenshot%202025-10-15%20092703.png)
+![Extra Screenshot 3](screenshots/Screenshot%202025-10-15%20100852.png)
+![Extra Screenshot 4](screenshots/Screenshot%202025-10-15%20104244.png)
+![Extra Screenshot 5](screenshots/Screenshot%202025-10-15%20111122.png)
+![Extra Screenshot 6](screenshots/Screenshot%202025-10-29%20122043.png)
 
 
 ## 🧪 Testing & Validation
