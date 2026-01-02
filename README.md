@@ -119,13 +119,13 @@ MySQL Database
 ![Login Page](screenshots/Screenshot%202025-10-14%20135813.png) 
 
 ### 🔐 Login Page 2
-![Login Page](screenshots/Screenshot%202025-10-14%20134617.png) 
+![Login Page]( screenshots/Screenshot%202025-10-14%20135954.png)
 
 ### 📊 Admin Dashboard
 ![Admin Dashboard](screenshots/Screenshot%202025-10-03%20115032.png)
 
 ### 👁️ Exam Monitoring Page
-![Exam Monitoring](screenshots/Screenshot%202025-10-14%20135954.png)
+![Exam Monitoring](screenshots/Screenshot%202025-10-14%20134617.png)
 
 ### 🧪 Test Cases & Validation
 ![Test Cases](screenshots/Screenshot%202025-10-14%20141106.png)
