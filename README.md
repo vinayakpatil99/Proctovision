@@ -160,6 +160,15 @@ All critical workflows such as authentication, exam flow, and activity logging w
 
 ---
 
+| Feature | Admin | Examiner | Student |
+|---------|:-----:|:--------:|:-------:|
+| Login | ✅ | ✅ | ✅ |
+| Create Exam | ✅ | ❌ | ❌ |
+| Monitor Exam | ✅ | ✅ | ❌ |
+| Take Exam | ❌ | ❌ | ✅ |
+| Activity Logging | ✅ | ✅ | ❌ |
+
+
 ## ⚙️ How to Run Locally
 
 ### Prerequisites
