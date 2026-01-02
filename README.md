@@ -113,10 +113,10 @@ MySQL Database
 > Screenshots are stored inside the `screenshots/` directory
 
 ### 🏠 Home Page
-![Home Page](screenshots/Screenshot%202025-10-03%20115032.png)
+![Home Page]( screenshots/Screenshot%202025-10-14%20131531.png)
 
 ### 🔐 Login Page
-![Login Page](screenshots/Screenshot%202025-10-14%20131531.png)
+![Login Page]( screenshots/Screenshot%202025-10-03%20115032.png) 
 
 ### 🔐 Login Page 2
 ![Login Page](screenshots/Screenshot%202025-10-14%20134617.png)
